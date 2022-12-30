@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ColorController;
+use App\Http\Controllers\Backend\InventoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SizeController;
@@ -68,6 +69,19 @@ Route::prefix('dashboard')->name('backend.')->group(function () {
         Route::get('/restore/{id}', 'restore')->name('restore');
         Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy');
     });
+    /* Inventory Route */
+    Route::controller(InventoryController::class)->prefix('product/inventory')->name('product.inventory.')->group(function () {
+        Route::get('/{id}', 'index')->name('index');
+        /* Route::get('/create', 'create')->name('create'); */
+        Route::post('/', 'store')->name('store');
+        Route::get('/{inventory}/show/', 'show')->name('show');
+        Route::get('/{inventory}/edit/', 'edit')->name('edit');
+        Route::put('/{inventory}/update/', 'update')->name('update');
+        Route::delete('/{inventory}/delete/', 'destroy')->name('destroy');
+        /* Route::get('/restore/{id}', 'restore')->name('restore');
+        Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy'); */
+    });
+    
     /* Product Category Route */
     Route::controller(CategoryController::class)->prefix('category')->name('category.')->group(function (){
         Route::get('/','index')->name('index');

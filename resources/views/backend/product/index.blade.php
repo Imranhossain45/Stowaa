@@ -19,10 +19,7 @@
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" data-toggle="tab" data-target="#all_product" type="button">All Product</button>
-          </li>
-          <li class="nav-item" role="presentation">
+          <li class="nav-item active" role="presentation">
             <button class="nav-link" data-toggle="tab" data-target="#active" type="button">Active</button>
           </li>
           <li class="nav-item" role="presentation">
@@ -33,7 +30,7 @@
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-          <div class="tab-pane fade" id="all_product">
+          <div class="tab-pane fade active" id="active">
             <div class="card">
               <div class="card-body">
                 <table class=" table table-responsive">
@@ -55,9 +52,10 @@
                       <td>
                         {{ Str::limit($product->title, 20, '...') }}
                         <div class=" my-2">
+                          <a href="{{ route('backend.product.inventory.index',$product->id) }}" class=" btn btn-sm btn-success">+Store</a>
                           <a href="" class=" btn btn-sm btn-primary">View</a>
                           <a href="{{ route('backend.product.edit', $product->id) }}"
-                            class=" btn btn-sm btn-success">Edit</a>
+                            class=" btn btn-sm btn-info">Edit</a>
                             <form></form>
                           <form action="{{ route('backend.product.destroy', $product->id) }}" method="POST">
                             @csrf
@@ -89,7 +87,6 @@
               </div>
             </div>
           </div>
-          <div class="tab-pane fade" id="active">...</div>
           <div class="tab-pane fade" id="draft">...</div>
           <div class="tab-pane fade" id="trash">
             <div class="card">

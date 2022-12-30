@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Size;
+use App\Models\Color;
+use App\Models\Product;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class InventoryController extends Controller
 {
@@ -13,9 +16,14 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index($id)
+    {   
+        $product=Product::findOrFail($id);
+        $sizes=Size::all();
+        $colors= Color::all();
+
+        $inventories=Inventory::where('product_id',$id)->get();
+        return view('backend.inventory.index',compact('product', 'sizes', 'colors', 'inventories'));
     }
 
     /**
@@ -36,7 +44,21 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'product_id'=>'required',
+            'size'=> 'required',
+            'color'=>'required',
+            'quantity'=>'required|integer',
+            'add_price'=>'nullable|numeric',
+        ]);
+        Inventory::create([
+            'product_id' => $request->product_id,
+            'size_id' => $request->size,
+            'color_id' => $request->color,
+            'quantity' => $request->quantity,
+            'additional_price' =>$request->add_price ,
+        ]);
+        return back()->with('success', 'Inventory add Successful!');
     }
 
     /**

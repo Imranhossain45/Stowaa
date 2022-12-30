@@ -82,9 +82,9 @@ class ProductController extends Controller
             $product->categories()->attach($request->category_id);
             
             if ($galleries) {
-                foreach ($galleries as $img) {
-                    $gallery_img = Str::uuid() . '.' . $img->extension();
-                    Image::make($request->image)->crop(800,609)->save('storage/product/' . $gallery_img);
+                foreach ($galleries as $galleryImg) {
+                    $gallery_img = Str::uuid() . '.' . $galleryImg->extension();
+                    Image::make($galleryImg)->crop(800,609)->save('storage/product/' . $gallery_img);
                     ProductGallery::create([
                         'product_id' => $product->id,
                         'image' => $gallery_img,
