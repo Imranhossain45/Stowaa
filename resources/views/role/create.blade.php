@@ -30,7 +30,7 @@
           <div class="card-body">
             <form></form>
             
-            <form action="{{ route('backend.permission.store') }}" method="POST">
+            <form action="{{ route('backend.role.permission.store') }}" method="POST">
               @csrf
               <input type="text" class="form-control" name="name" placeholder="Add Permission"
                 value="{{ old('name') }}">

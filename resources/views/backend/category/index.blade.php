@@ -33,24 +33,43 @@
                 <th>Status</th>
                 <th>Action</th>
               </tr>
-              @forelse ($categories as $category)
-                <tr>
-                  <td>{{ $category->id }}</td>
-                  <td>{{ $category->name }}</td>
+              @forelse ($categories as $key=>$category)
+                <tr style="background: #d3d1d1">
+                  <td>{{ ++$key }}</td>
                   <td>
                     @if ($category->image)
                       <img width="60" src="{{ asset('storage/category/' . $category->image) }}" alt="{{ $category->name }}">
                     @else
-                      <img width="60" src="{{ asste('storage/category/cat.png') }}" alt="{{ $category->name }}">
+                      <img src="{{ Avatar::create($category->name)->setDimension(50)->setFontSize(18)->toBase64() }}" alt="{{ $category->name }}">
                     @endif
+                  </td>
+                  <td> {{ $category->name }} </td>
                   <td>{{ $category->slug }}</td>
-                  <td>10</td>
+                  <td>{{ $category->products_count }}</td>
                   <td>{{ $category->status }}</td>
                   <td>
                     <a href="#">Edit</a>
-                  </td>
-                  </td>
+                  </td>                  
                 </tr>
+                @foreach ($category->childCategories as $category)
+                  <tr>
+                  <td>--</td>
+                  <td>
+                    @if ($category->image)
+                      <img width="60" src="{{ asset('storage/category/' . $category->image) }}" alt="{{ $category->name }}">
+                    @else
+                      <img src="{{ Avatar::create($category->name)->setDimension(50)->setFontSize(18)->toBase64() }}" alt="{{ $category->name }}">
+                    @endif
+                  </td>
+                  <td> {{ $category->name }} </td>
+                  <td>{{ $category->slug }}</td>
+                  <td>{{ $category->products_count }}</td>
+                  <td>{{ $category->status }}</td>
+                  <td>
+                    <a href="#">Edit</a>
+                  </td>                  
+                </tr>
+                @endforeach
               @empty
                 <tr>
                   <td colspan="5">
