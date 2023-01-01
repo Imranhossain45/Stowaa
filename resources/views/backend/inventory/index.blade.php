@@ -60,9 +60,9 @@
             <form></form>
             <form action="{{ route('backend.product.inventory.store') }}" method="POST">
               @csrf   
-              <input type="hidden" name="product_id" value="{{ $product->id }}">           
+              <input type="hidden" name="product_id" class="product_id" value="{{ $product->id }}">           
               <div class="form-group">
-                <select name="size" class="form-control my-3 select_2">
+                <select name="size" class="form-control my-3 select_2 size_select">
                 <option selected disabled>Select Size</option>
                 @foreach ($sizes as $size)
                   <option value="{{ $size->id }}">{{ $size->name }}</option>
@@ -70,11 +70,9 @@
               </select>
               </div>
               <div class="form-group">
-                <select name="color" class="form-control my-3 select_2">
+                <select name="color" class="form-control my-3 select_2 color_select">
                 <option selected disabled>Select Color</option>
-                @foreach ($colors as $color)
-                  <option value="{{ $color->id }}">{{ $color->name }}</option>
-                @endforeach
+                
               </select>
               </div>
               <div class="form-group">
@@ -100,6 +98,28 @@
 <script>
   $(function($){
     $('.select_2').select2();
+
+    //ajax
+    $('.size_select').on('change', function(){
+
+      var size_id= $('.size_select').val();
+      var product_id= $('.product_id').val();
+      $.ajax(
+      {
+        url:"{{ route('backend.product.inventory.color.select') }}",
+        type: 'POST',
+        data:{ 
+          size_id:size_id, 
+          product_id:product_id,
+          _token:'{{ csrf_token() }}',
+        },
+        
+        datatype: 'json',
+        success: function(data){
+          $('.color_select').html(data);
+        }
+      });
+    });
   });
 </script>
 @endsection

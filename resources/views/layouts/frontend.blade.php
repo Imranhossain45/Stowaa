@@ -74,7 +74,7 @@
                     <div class="flug_wrap">
                       <img src="{{ asset('frontend/images/flug/flug_uk.png') }}" alt="image_not_found">
                     </div>
-                    <select>
+                    <select class="nice_select">
                       <option data-display="Select Option">Select Your Language</option>
                       <option value="1" selected>English</option>
                       <option value="2">Bangla</option>
@@ -86,7 +86,7 @@
                 <li>
                   <div class="select_option">
                     <h3 class="title_text">Currency:</h3>
-                    <select>
+                    <select class="nice_select">
                       <option data-display="Select Option">Select Your Currency</option>
                       <option value="Bangladeshi TK" selected>BDT</option>
                       <option value="united States Dollar">USD</option>
@@ -173,7 +173,7 @@
               <form action="#">
                 <div class="advance_serach">
                   <div class="select_option mb-0 clearfix">
-                    <select>
+                    <select class="nice_select">
                       <option data-display="All Categories">Select A Category</option>
                       <option value="1">New Arrival Products</option>
                       <option value="2">Most Popular Products</option>
@@ -257,7 +257,10 @@
                     <li>
                       <a class="nav-link" href="{{ route('frontend.home') }}" id="shop_submenu" role="button">Home</a>
                     </li>
-                    <li class="dropdown">
+                    <li>
+                      <a class=" nav-link" href="{{ route('frontend.shop.index') }}">Shop</a>
+                    </li>
+                    {{-- <li class="dropdown">
                       <a class="nav-link" href="#" id="shop_submenu" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">Shop</a>
                       <ul class="submenu dropdown-menu" aria-labelledby="shop_submenu">
@@ -265,7 +268,7 @@
                         <li><a href="{{ route('frontend.shoplist') }}">Shop List</a></li>
                         <li><a href="{{ route('frontend.shopdetails') }}">Shop Details</a></li>
                       </ul>
-                    </li>
+                    </li> --}}
                     <li class="dropdown">
                       <a class="nav-link" href="#" id="blog_submenu" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false"> Blog </a>

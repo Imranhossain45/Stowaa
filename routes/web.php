@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SizeController;
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Frontend\ShopController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,12 @@ Route::controller(FrontendController::class)->name('frontend.')->group(function(
     Route::get('/shoplist', "shoplist")->name('shoplist');
     Route::get('/shopdetails', "shopdetails")->name('shopdetails');
 
+});
+
+Route::controller(ShopController::class)->name('frontend.shop.')->group(function(){
+    Route::get('/shop', 'index')->name('index');
+    Route::get('/shop/{slug}', 'shopDetails')->name('details');
+    Route::post('/shop/single/color', 'shopColor')->name('color');
 });
 
 
@@ -80,6 +87,8 @@ Route::prefix('dashboard')->name('backend.')->group(function () {
         Route::delete('/{inventory}/delete/', 'destroy')->name('destroy');
         /* Route::get('/restore/{id}', 'restore')->name('restore');
         Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy'); */
+
+        Route::post('/select/color', 'colorSelect')->name('color.select');
     });
     
     /* Product Category Route */
