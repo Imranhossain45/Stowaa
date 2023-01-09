@@ -783,7 +783,7 @@
 
     // quantity - start
     // --------------------------------------------------
-    (function() {
+    /* (function() {
         window.inputNumber = function(el) {
             var min = el.attr("min") || false;
             var max = el.attr("max") || false;
@@ -820,7 +820,7 @@
         };
     })();
     inputNumber($(".input_number"));
-    inputNumber($(".input_number_2"));
+    inputNumber($(".input_number_2")); */
 
 
     // DATA BACKGROUND IMAGE

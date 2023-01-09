@@ -3,7 +3,7 @@
 @section('content')
 
   <!-- breadcrumb_section - start
-                          ================================================== -->
+                                      ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -13,10 +13,10 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                          ================================================== -->
+                                      ================================================== -->
 
   <!-- product_details - start
-                          ================================================== -->
+                                      ================================================== -->
   <section class="product_details section_space pb-0">
     <div class="container">
       <div class="row">
@@ -92,7 +92,7 @@
                       <h4 class="input_title">Size *</h4>
                       <select class=" form-select size_select">
                         <option data-display="- Please select -">Choose A Option</option>
-                        @foreach ($product->inventories as $inventory)
+                        @foreach ($sizeOf as $inventory)
                           <option value="{{ $inventory->size->id }}">{{ $inventory->size->name }}</option>
                         @endforeach
                       </select>
@@ -102,12 +102,12 @@
                     <div class="select_option clearfix">
                       <h4 class="input_title">Color *</h4>
                       <select class=" form-select color_select">
-                        <option data-display="- Please select -">Choose Size First</option>
+                        {{-- <option data-display="- Please select -">Choose a Option</option> --}}
                       </select>
                     </div>
                   </div>
                 </div>
-                <span class="repuired_text">Repuired Fields *</span>
+                <span class="repuired_text">Stock Limit <span id="stock_p"></span></span>
               </form>
             </div>
 
@@ -403,10 +403,10 @@
     </div>
   </section>
   <!-- product_details - end
-                          ================================================== -->
+                                      ================================================== -->
 
   <!-- related_products_section - start
-                          ================================================== -->
+                                      ================================================== -->
   <section class="related_products_section section_space">
     <div class="container">
       <div class="row">
@@ -690,12 +690,27 @@
     </div>
   </section>
   <!-- related_products_section - end
-                          ================================================== -->
+                                      ================================================== -->
 @endsection
 @section('script')
   <script>
     //ajax
     $(function() {
+
+      var input_number = $('.input_number');
+      var inc = input_number.val();
+      $('.input_number_increment').on('click', function() {
+        inc++;
+        input_number.val(inc);
+      })
+      $('.input_number_decrement').on('click', function() {
+        if (inc > 1) {
+          inc--;
+        }
+        input_number.val(inc);
+      })
+
+
       $('.size_select').on('change', function() {
 
         var size_id = $('.size_select').val();
@@ -712,6 +727,29 @@
           datatype: 'json',
           success: function(data) {
             $('.color_select').html(data);
+          }
+        });
+      });
+      $('.color_select').on('change', function() {
+
+        var size_id = $('.size_select').val();
+        var color_id = $('.color_select').val();
+        var product_id = $('.product_id').val();
+        $.ajax({
+          url: "{{ route('frontend.shop.color.size.select') }}",
+          type: 'POST',
+          data: {
+            size_id: size_id,
+            color_id: color_id,
+            product_id: product_id,
+            _token: '{{ csrf_token() }}',
+          },
+
+          datatype: 'json',
+          success: function(data) {
+            //console.log(data);
+            $('#stock_p').html(data['quantity']);
+            $('.item_price').html(data['original_price']);
           }
         });
       });

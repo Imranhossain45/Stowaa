@@ -30,21 +30,21 @@ use Spatie\Permission\Models\Permission;
 
 Auth::routes(['verify' => true]);
 /* Frontend Routes */
-Route::controller(FrontendController::class)->name('frontend.')->group(function(){
-    Route::get('/',"frontendIndex")->name('home');
-    Route::get('/contact',"contact")->name('contact');
-    Route::get('/about',"about")->name('about');
-    Route::get('/team',"team")->name('team');
+Route::controller(FrontendController::class)->name('frontend.')->group(function () {
+    Route::get('/', "frontendIndex")->name('home');
+    Route::get('/contact', "contact")->name('contact');
+    Route::get('/about', "about")->name('about');
+    Route::get('/team', "team")->name('team');
     Route::get('/shopgrid', "shopgrid")->name('shopgrid');
     Route::get('/shoplist', "shoplist")->name('shoplist');
     Route::get('/shopdetails', "shopdetails")->name('shopdetails');
-
 });
 
-Route::controller(ShopController::class)->name('frontend.shop.')->group(function(){
+Route::controller(ShopController::class)->name('frontend.shop.')->group(function () {
     Route::get('/shop', 'index')->name('index');
     Route::get('/shop/{slug}', 'shopDetails')->name('details');
     Route::post('/shop/single/color', 'shopColor')->name('color');
+    Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');
 });
 
 
@@ -56,10 +56,10 @@ Route::prefix('dashboard')->name('backend.')->group(function () {
     /* Role and Permission */
     Route::controller(RolePermissionController::class)->prefix('role')->name('role.')->group(function () {
         Route::get('/', 'indexRole')->name('index')->middleware(['role_or_permission:super-admin|see role']);
-        Route::get('/create','createRole')->name('create')->middleware(['role_or_permission:super-admin|create role']);
-        Route::post('/store','storeRole')->name('store')->middleware(['role_or_permission:super-admin|create role']);
-        Route::get('/edit/{id}','editRole')->name('edit')->middleware(['role_or_permission:super-admin|edit role']);
-        Route::post('/update/{id}','updateRole')->name('update')->middleware(['role_or_permission:super-admin|edit role']);
+        Route::get('/create', 'createRole')->name('create')->middleware(['role_or_permission:super-admin|create role']);
+        Route::post('/store', 'storeRole')->name('store')->middleware(['role_or_permission:super-admin|create role']);
+        Route::get('/edit/{id}', 'editRole')->name('edit')->middleware(['role_or_permission:super-admin|edit role']);
+        Route::post('/update/{id}', 'updateRole')->name('update')->middleware(['role_or_permission:super-admin|edit role']);
 
 
         Route::post('/permission/store', [RolePermissionController::class, 'permissionStore'])->name('permission.store');
@@ -90,38 +90,37 @@ Route::prefix('dashboard')->name('backend.')->group(function () {
 
         Route::post('/select/color', 'colorSelect')->name('color.select');
     });
-    
+
     /* Product Category Route */
-    Route::controller(CategoryController::class)->prefix('category')->name('category.')->group(function (){
-        Route::get('/','index')->name('index');
-        Route::post('/','store')->name('store');
-        Route::get('/{category}/show/','show')->name('show');
-        Route::get('/{category}/edit/','edit')->name('edit');
-        Route::put('/{category}/update/','update')->name('update');
+    Route::controller(CategoryController::class)->prefix('category')->name('category.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{category}/show/', 'show')->name('show');
+        Route::get('/{category}/edit/', 'edit')->name('edit');
+        Route::put('/{category}/update/', 'update')->name('update');
         Route::delete('/{category}/delete/', 'destroy')->name('destroy');
     });
     /* Color Route */
-    Route::controller(ColorController::class)->prefix('color')->name('color.')->group(function (){
-        Route::get('/','index')->name('index');
-        Route::post('/','store')->name('store');
-        Route::get('/{color}/show/','show')->name('show');
-        Route::get('/{color}/edit/','edit')->name('edit');
-        Route::put('/{color}/update/','update')->name('update');
+    Route::controller(ColorController::class)->prefix('color')->name('color.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{color}/show/', 'show')->name('show');
+        Route::get('/{color}/edit/', 'edit')->name('edit');
+        Route::put('/{color}/update/', 'update')->name('update');
         Route::delete('/{color}/delete/', 'destroy')->name('destroy');
     });
     /* Size Route */
-    Route::controller(SizeController::class)->prefix('size')->name('size.')->group(function (){
-        Route::get('/','index')->name('index');
-        Route::post('/','store')->name('store');
-        Route::get('/{size}/show/','show')->name('show');
-        Route::get('/{size}/edit/','edit')->name('edit');
-        Route::put('/{size}/update/','update')->name('update');
+    Route::controller(SizeController::class)->prefix('size')->name('size.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{size}/show/', 'show')->name('show');
+        Route::get('/{size}/edit/', 'edit')->name('edit');
+        Route::put('/{size}/update/', 'update')->name('update');
         Route::delete('/{size}/delete/', 'destroy')->name('destroy');
     });
-    
 });
 
 
 /* User Auth */
-Route::get('/user/login',[UserAuthController::class,"login"])->name('user.login');
-Route::get('/user/registration',[UserAuthController::class, "registration"])->name('user.registration');
+Route::get('/user/login', [UserAuthController::class, "login"])->name('user.login');
+Route::get('/user/registration', [UserAuthController::class, "registration"])->name('user.registration');
