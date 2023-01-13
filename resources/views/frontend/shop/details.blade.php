@@ -3,7 +3,7 @@
 @section('content')
 
   <!-- breadcrumb_section - start
-                                      ================================================== -->
+                                        ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -13,10 +13,10 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                                      ================================================== -->
+                                        ================================================== -->
 
   <!-- product_details - start
-                                      ================================================== -->
+                                        ================================================== -->
   <section class="product_details section_space pb-0">
     <div class="container">
       <div class="row">
@@ -111,27 +111,37 @@
               </form>
             </div>
 
-            <div class="quantity_wrap">
-              <form action="#">
+            <form action="{{ route('frontend.cart.store') }}" method="POST">
+              @csrf
+              <div class="quantity_wrap">
+                <input type="hidden" name="inventory_id" id="inventory_id">
+                <input type="hidden" name="total" id="total">
                 <div class="quantity_input">
                   <button type="button" class="input_number_decrement">
                     <i class="fal fa-minus"></i>
                   </button>
-                  <input class="input_number" type="text" value="1">
+                  <input class="input_number" name="quantity" type="text" value="1">
                   <button type="button" class="input_number_increment">
                     <i class="fal fa-plus"></i>
                   </button>
                 </div>
-              </form>
 
-              <div class="total_price">Total: $620,99</div>
-            </div>
 
-            <ul class="default_btns_group ul_li">
-              <li><a class="btn btn_primary addtocart_btn" href="#!">Add To Cart</a></li>
-              <li><a href="#!"><i class="far fa-compress-alt"></i></a></li>
-              <li><a href="#!"><i class="fas fa-heart"></i></a></li>
-            </ul>
+                <div class="total_price">Total: $ <span class="total_price_in">
+                    @if ($product->sale_price)
+                      {{ $product->sale_price }}
+                    @else
+                      {{ $product->price }}
+                    @endif
+                  </span></div>
+              </div>
+
+              <ul class="default_btns_group ul_li">
+                <li><button type="submit" class="btn btn_primary addtocart_btn" >Add To Cart</button></li>
+                <li><a href="#!"><i class="far fa-compress-alt"></i></a></li>
+                <li><a href="#!"><i class="fas fa-heart"></i></a></li>
+              </ul>
+            </form>
 
             <ul class="default_share_links ul_li">
               <li>
@@ -403,10 +413,10 @@
     </div>
   </section>
   <!-- product_details - end
-                                      ================================================== -->
+                                        ================================================== -->
 
   <!-- related_products_section - start
-                                      ================================================== -->
+                                        ================================================== -->
   <section class="related_products_section section_space">
     <div class="container">
       <div class="row">
@@ -690,24 +700,37 @@
     </div>
   </section>
   <!-- related_products_section - end
-                                      ================================================== -->
+                                        ================================================== -->
 @endsection
 @section('script')
   <script>
     //ajax
     $(function() {
-
+      var stock_limit = $('#stock_p');
       var input_number = $('.input_number');
       var inc = input_number.val();
+      var sale_price = $('.item_price');
+      var total_price = $('.total_price_in');
+      var inventory_id = $('#inventory_id');
+      var total = $('#total');
+
       $('.input_number_increment').on('click', function() {
-        inc++;
+        if (input_number.val() < stock_limit.html()) {
+          inc++;
+        }
         input_number.val(inc);
+        var floatNum = parseFloat(sale_price.html() * inc).toFixed(2);
+        total_price.html(floatNum);
+        total.val(floatNum);
       })
       $('.input_number_decrement').on('click', function() {
         if (inc > 1) {
           inc--;
         }
         input_number.val(inc);
+        var floatNum = parseFloat(sale_price.html() * inc).toFixed(2);
+        total_price.html(floatNum);
+        total.val(floatNum);
       })
 
 
@@ -748,8 +771,10 @@
           datatype: 'json',
           success: function(data) {
             //console.log(data);
-            $('#stock_p').html(data['quantity']);
-            $('.item_price').html(data['original_price']);
+            stock_limit.html(data['quantity']);
+            sale_price.html(data['original_price']);
+            total_price.html(data['original_price']);
+            inventory_id.val(data['id']);
           }
         });
       });

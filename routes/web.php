@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\InventoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SizeController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\ShopController;
 use App\Models\User;
@@ -30,7 +31,9 @@ use Spatie\Permission\Models\Permission;
 
 Auth::routes(['verify' => true]);
 /* Frontend Routes */
-Route::controller(FrontendController::class)->name('frontend.')->group(function () {
+Route::name('frontend.')->group(function (){    
+
+Route::controller(FrontendController::class)->group(function () {
     Route::get('/', "frontendIndex")->name('home');
     Route::get('/contact', "contact")->name('contact');
     Route::get('/about', "about")->name('about');
@@ -40,12 +43,18 @@ Route::controller(FrontendController::class)->name('frontend.')->group(function 
     Route::get('/shopdetails', "shopdetails")->name('shopdetails');
 });
 
-Route::controller(ShopController::class)->name('frontend.shop.')->group(function () {
+Route::controller(ShopController::class)->name('shop.')->group(function () {
     Route::get('/shop', 'index')->name('index');
     Route::get('/shop/{slug}', 'shopDetails')->name('details');
     Route::post('/shop/single/color', 'shopColor')->name('color');
-    Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');
+    Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');    
 });
+Route::controller(CartController::class)->prefix('cart')->name('cart.')->group(function(){
+    Route::get('/', 'index')->name('index'); 
+    Route::post('/store', 'store')->name('store'); 
+});
+});
+
 
 
 
