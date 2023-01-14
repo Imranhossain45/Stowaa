@@ -31,28 +31,29 @@ use Spatie\Permission\Models\Permission;
 
 Auth::routes(['verify' => true]);
 /* Frontend Routes */
-Route::name('frontend.')->group(function (){    
+Route::name('frontend.')->group(function () {
 
-Route::controller(FrontendController::class)->group(function () {
-    Route::get('/', "frontendIndex")->name('home');
-    Route::get('/contact', "contact")->name('contact');
-    Route::get('/about', "about")->name('about');
-    Route::get('/team', "team")->name('team');
-    Route::get('/shopgrid', "shopgrid")->name('shopgrid');
-    Route::get('/shoplist', "shoplist")->name('shoplist');
-    Route::get('/shopdetails', "shopdetails")->name('shopdetails');
-});
+    Route::controller(FrontendController::class)->group(function () {
+        Route::get('/', "frontendIndex")->name('home');
+        Route::get('/contact', "contact")->name('contact');
+        Route::get('/about', "about")->name('about');
+        Route::get('/team', "team")->name('team');
+        Route::get('/shopgrid', "shopgrid")->name('shopgrid');
+        Route::get('/shoplist', "shoplist")->name('shoplist');
+        Route::get('/shopdetails', "shopdetails")->name('shopdetails');
+    });
 
-Route::controller(ShopController::class)->name('shop.')->group(function () {
-    Route::get('/shop', 'index')->name('index');
-    Route::get('/shop/{slug}', 'shopDetails')->name('details');
-    Route::post('/shop/single/color', 'shopColor')->name('color');
-    Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');    
-});
-Route::controller(CartController::class)->prefix('cart')->name('cart.')->group(function(){
-    Route::get('/', 'index')->name('index'); 
-    Route::post('/store', 'store')->name('store'); 
-});
+    Route::controller(ShopController::class)->name('shop.')->group(function () {
+        Route::get('/shop', 'index')->name('index');
+        Route::get('/shop/{slug}', 'shopDetails')->name('details');
+        Route::post('/shop/single/color', 'shopColor')->name('color');
+        Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');
+    });
+    Route::controller(CartController::class)->prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        Route::post('/update', 'update')->name('update');
+    });
 });
 
 

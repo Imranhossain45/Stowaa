@@ -2,7 +2,7 @@
 @section('title', 'Cart')
 @section('content')
   <!-- breadcrumb_section - start
-                      ================================================== -->
+                          ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -12,10 +12,10 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                      ================================================== -->
+                          ================================================== -->
 
   <!-- cart_section - start
-                      ================================================== -->
+                          ================================================== -->
   <section class="cart_section section_space">
     <div class="container">
       <div class="cart_update_wrap">
@@ -27,17 +27,18 @@
           <thead>
             <tr>
               <th>Product</th>
-              <th class="">Size & Color</th>
-              <th class="">Price</th>
-              <th class="">Added Price</th>
-              <th class="">Quantity</th>
-              <th class="">Total</th>
-              <th class="">Remove</th>
+              <th class=" text-center">Size & Color</th>
+              <th class="text-center">Price</th>
+              <th class="text-center">Added Price</th>
+              <th class="text-center">Stock</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-center">Total</th>
+              <th class="text-center">Remove</th>
             </tr>
           </thead>
           <tbody>
             @foreach ($carts as $cart)
-              <tr>
+              <tr class="parent_row">
                 <td>
                   <div class="cart_product">
                     <img src="{{ asset('storage/product/' . $cart->inventory->product->image) }}" alt="image_not_found">
@@ -49,14 +50,16 @@
                   -
                   <span>{{ $cart->inventory->color->name }}</span>
                 </td>
-                <td class="text-center"><span class="price_text">$
+                <td class="text-center">$
+                  <span class="price_text base_price">
                     @if ($cart->inventory->product->sale_price)
                       {{ $cart->inventory->product->sale_price }}
                     @else
                       {{ $cart->inventory->product->price }}
                     @endif
 
-                  </span></td>
+                  </span>
+                </td>
                 <td>
                   @if ($cart->inventory->additional_price)
                     {{ $cart->inventory->additional_price }}
@@ -64,9 +67,14 @@
                     --
                   @endif
                 </td>
+                <td>
+                  <span>{{ $cart->inventory->quantity }}</span>
+                </td>
                 <td class="text-center">
                   <form action="#">
                     <div class="quantity_input">
+                      <input type="hidden" class="stock" value="{{ $cart->inventory->quantity }}">
+                      <input type="hidden" class="inventory_id" value="{{ $cart->inventory->id }}">
                       <button type="button" class="input_number_decrement">
                         <i class="fal fa-minus"></i>
                       </button>
@@ -77,7 +85,9 @@
                     </div>
                   </form>
                 </td>
-                <td class="text-center"><span class="price_text">${{ $cart->total_price }}</span></td>
+                <td class="text-center">$<span class="price_text price_total">
+                    {{ (($cart->inventory->product->sale_price ?? $cart->inventory->product->price) + $cart->inventory->additional_price ?? '') * $cart->cart_quantity }}</span>
+                </td>
                 <td class="text-center"><button type="button" class="remove_btn"><i
                       class="fal fa-trash-alt"></i></button>
                 </td>
@@ -166,5 +176,72 @@
     </div>
   </section>
   <!-- cart_section - end
-                      ================================================== -->
+                          ================================================== -->
+@endsection
+@section('script')
+  <script>
+    //ajax
+    $(function() {
+      var input_number = $('.input_number');
+
+
+
+      $('.input_number_increment').on('click', function() {
+        var parent_row = $(this).parents('.parent_row');
+        var base_price = parent_row.children('td').find('.base_price').html();
+        var price_total = parent_row.children('td').find('.price_total');
+
+
+        var child = $(this).parent('.quantity_input').children('.input_number');
+        var inc = child.val();
+        var stock = $(this).parent('.quantity_input').children('.stock').val();
+        if (inc < parseInt(stock)) {
+          inc++;
+        }
+
+        child.val(inc);
+        var inventory_id = $(this).parent('.quantity_input').children('.inventory_id').val();
+        $.ajax({
+          url: "{{ route('frontend.cart.update') }}",
+          type: 'POST',
+          data: {
+            inventory_id: inventory_id,
+            quantity: inc,
+            _token: '{{ csrf_token() }}',
+          },
+
+          datatype: 'json',
+          success: function(data) {
+            price_total.html(parseInt(base_price) * inc);
+          }
+        });
+      });
+      $('.input_number_decrement').on('click', function() {
+        var parent_row = $(this).parents('.parent_row');
+        var base_price = parent_row.children('td').find('.base_price').html();
+        var price_total = parent_row.children('td').find('.price_total');
+        var child = $(this).parent('.quantity_input').children('.input_number');
+        var inc = child.val();
+        if (inc > 1) {
+          inc--;
+        }
+        child.val(inc);
+        var inventory_id = $(this).parent('.quantity_input').children('.inventory_id').val();
+        $.ajax({
+          url: "{{ route('frontend.cart.update') }}",
+          type: 'POST',
+          data: {
+            inventory_id: inventory_id,
+            quantity: inc,
+            _token: '{{ csrf_token() }}',
+          },
+
+          datatype: 'json',
+          success: function(data) {
+            price_total.html(parseInt(base_price) * inc);
+          }
+        });
+      });
+    })
+  </script>
 @endsection
