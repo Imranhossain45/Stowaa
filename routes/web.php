@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ColorController;
+use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\InventoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RolePermissionController;
@@ -53,6 +54,7 @@ Route::name('frontend.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
         Route::post('/update', 'update')->name('update');
+        Route::delete('/delete/{cart}', 'destroy')->name('delete');
     });
 });
 
@@ -127,6 +129,14 @@ Route::prefix('dashboard')->name('backend.')->group(function () {
         Route::get('/{size}/edit/', 'edit')->name('edit');
         Route::put('/{size}/update/', 'update')->name('update');
         Route::delete('/{size}/delete/', 'destroy')->name('destroy');
+    });
+    /* Coupon Route */
+    Route::controller(CouponController::class)->prefix('coupon')->name('coupon.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{coupon}/edit/', 'edit')->name('edit');
+        Route::put('/{coupon}/update/', 'update')->name('update');
+        Route::delete('/{coupon}/delete/', 'destroy')->name('destroy');
     });
 });
 
