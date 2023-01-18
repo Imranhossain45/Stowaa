@@ -221,10 +221,16 @@
                   </li>
                 @endcanany
 
-                <li class="sidebar-menu-item {{ Route::is('backend.coupon.index') ? 'active' : '' }}">
+                <li class="sidebar-menu-item {{ Route::is('backend.coupon.*') ? 'active' : '' }}">
                   <a class="sidebar-menu-button" href="{{ route('backend.coupon.index') }}">
                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
                     <span class="sidebar-menu-text">Coupon</span>
+                  </a>
+                </li>
+                <li class="sidebar-menu-item {{ Route::is('backend.shippingcharge.*') ? 'active' : '' }}">
+                  <a class="sidebar-menu-button" href="{{ route('backend.shippingcharge.index') }}">
+                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                    <span class="sidebar-menu-text">Shipping Charge</span>
                   </a>
                 </li>
                 <li class="sidebar-menu-item">

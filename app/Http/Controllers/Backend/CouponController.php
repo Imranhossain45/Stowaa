@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class CouponController extends Controller
 {
@@ -94,5 +96,29 @@ class CouponController extends Controller
     public function destroy(Coupon $coupon)
     {
         //
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Coupon  $coupon
+     * @return \Illuminate\Http\Response
+     */
+    public function applyCoupon(Request $request)
+    {
+        $carts = Cart::where('user_id', auth()->user()->id)->get();
+        $coupon= Coupon::where('status',1)->where('name', $request->coupon)->first();
+        if($coupon->expire_date < now()){
+            return back()->with('warning','Coupon Date Expired!');
+            
+        } elseif($carts->sum('sub_total') <= (int) $coupon->limit){
+            return back()->with('warning', 'Coupon not valid! Amount must be getter than '.$coupon->limit); 
+        }else{
+            $coupon=[
+               'couponName'=> $coupon->name,
+               'amount'=> $coupon->discount, 
+            ];
+            Session::put('coupon',$coupon);
+            return back();
+        }
     }
 }

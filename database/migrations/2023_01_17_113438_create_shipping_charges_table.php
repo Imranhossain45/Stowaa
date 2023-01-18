@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('shipping_charges', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('location');
             $table->decimal('charge')->default(0);
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

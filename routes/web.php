@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\InventoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RolePermissionController;
+use App\Http\Controllers\Backend\ShippingChargeController;
 use App\Http\Controllers\Backend\SizeController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -56,6 +57,7 @@ Route::name('frontend.')->group(function () {
         Route::post('/update', 'update')->name('update');
         Route::delete('/delete/{cart}', 'destroy')->name('delete');
     });
+    Route::post('apply/coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
 });
 
 
@@ -138,6 +140,15 @@ Route::prefix('dashboard')->name('backend.')->group(function () {
         Route::put('/{coupon}/update/', 'update')->name('update');
         Route::delete('/{coupon}/delete/', 'destroy')->name('destroy');
     });
+    /* Shipping Charge Route */
+    Route::controller(ShippingChargeController::class)->prefix('shipping/charge')->name('shippingcharge.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{shippingcharge}/edit/', 'edit')->name('edit');
+        Route::put('/{shippingcharge}/update/', 'update')->name('update');
+        Route::delete('/{shippingcharge}/delete/', 'destroy')->name('destroy');
+    });
+    
 });
 
 

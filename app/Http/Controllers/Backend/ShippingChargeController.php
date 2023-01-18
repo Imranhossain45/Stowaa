@@ -14,8 +14,9 @@ class ShippingChargeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
+    {   
+        $sCharges=ShippingCharge::all();
+        return view('backend.shipping_charge.index',compact('sCharges'));
     }
 
     /**
@@ -36,7 +37,15 @@ class ShippingChargeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+           "location"=>'required',
+           "charge"=>'required|numeric', 
+        ]);
+        ShippingCharge::create([
+            "location"=>$request->location,
+            "charge"=>$request->charge,
+        ]);
+        return back()->with('success','Shipping Charge Added Successful!');
     }
 
     /**

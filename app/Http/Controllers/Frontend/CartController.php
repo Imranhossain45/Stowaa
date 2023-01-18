@@ -41,11 +41,13 @@ class CartController extends Controller
         $request->validate([
             "inventory_id"=>"required|integer",
             "quantity"=>"required|integer",
+            "sub_total"=>"required|numeric",
         ]);
         $success=Cart::create([
             "user_id"=>auth()->user()->id,
             "inventory_id" => $request->inventory_id,
-            "cart_quantity" => $request->quantity,  
+            "cart_quantity" => $request->quantity,
+            "sub_total" => $request->sub_total,  
         ]);
         if($success){
             return redirect(route('frontend.cart.index'))->with('success', 'Cart Added Successful!');
@@ -88,9 +90,11 @@ class CartController extends Controller
         $cart=Cart::where('inventory_id',$request->inventory_id)->where('user_id', auth()->user()->id)->first();
         $cart->update([
             "cart_quantity"=>$request->quantity,
+            "sub_total"=>$request->quantity * $request->base_price,
         ]);
         $quan= $cart->cart_quantity;
-        return response()->json($quan);
+        $subTotal=$cart->sum('sub_total');
+        return response()->json($subTotal);
     }
 
     /**

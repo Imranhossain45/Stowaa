@@ -3,7 +3,7 @@
 @section('content')
 
   <!-- breadcrumb_section - start
-                                        ================================================== -->
+                                          ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -13,10 +13,10 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                                        ================================================== -->
+                                          ================================================== -->
 
   <!-- product_details - start
-                                        ================================================== -->
+                                          ================================================== -->
   <section class="product_details section_space pb-0">
     <div class="container">
       <div class="row">
@@ -115,6 +115,14 @@
               @csrf
               <div class="quantity_wrap">
                 <input type="hidden" name="inventory_id" id="inventory_id">
+                <input type="hidden" name="sub_total" id="sub_total"
+                  value="
+                @if ($product->sale_price) 
+                    {{ $product->sale_price }}
+                @else
+                    {{ $product->price }} 
+                @endif
+                ">
                 {{-- <input type="hidden" name="total" id="total"> --}}
                 <div class="quantity_input">
                   <button type="button" class="input_number_decrement">
@@ -137,7 +145,7 @@
               </div>
 
               <ul class="default_btns_group ul_li">
-                <li><button type="submit" class="btn btn_primary addtocart_btn" >Add To Cart</button></li>
+                <li><button type="submit" class="btn btn_primary addtocart_btn">Add To Cart</button></li>
                 <li><a href="#!"><i class="far fa-compress-alt"></i></a></li>
                 <li><a href="#!"><i class="fas fa-heart"></i></a></li>
               </ul>
@@ -413,10 +421,10 @@
     </div>
   </section>
   <!-- product_details - end
-                                        ================================================== -->
+                                          ================================================== -->
 
   <!-- related_products_section - start
-                                        ================================================== -->
+                                          ================================================== -->
   <section class="related_products_section section_space">
     <div class="container">
       <div class="row">
@@ -700,7 +708,7 @@
     </div>
   </section>
   <!-- related_products_section - end
-                                        ================================================== -->
+                                          ================================================== -->
 @endsection
 @section('script')
   <script>
@@ -708,21 +716,23 @@
     $(function() {
       var stock_limit = $('#stock_p');
       var input_number = $('.input_number');
-      var inc = input_number.val();
+      var inc = parseInt(input_number.val());
       var sale_price = $('.item_price');
       var total_price = $('.total_price_in');
       var inventory_id = $('#inventory_id');
       var total = $('#total');
+      var sub_total = $('#sub_total');
 
-      var original_price= {{ $product->sale_price ?? $product->price }};
+      var original_price = {{ $product->sale_price ?? $product->price }};
 
       $('.input_number_increment').on('click', function() {
-        if (input_number.val() < stock_limit.html()) {
+        if (inc < stock_limit.html()) {
           inc++;
         }
         input_number.val(inc);
         var floatNum = parseFloat(sale_price.html() * inc).toFixed(2);
         total_price.html(floatNum);
+        sub_total.val(floatNum);
         total.val(floatNum);
       })
       $('.input_number_decrement').on('click', function() {
@@ -732,6 +742,7 @@
         input_number.val(inc);
         var floatNum = parseFloat(sale_price.html() * inc).toFixed(2);
         total_price.html(floatNum);
+        sub_total.val(floatNum);
         total.val(floatNum);
       });
 

@@ -2,7 +2,7 @@
 @section('title', 'Cart')
 @section('content')
   <!-- breadcrumb_section - start
-                          ================================================== -->
+                            ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -12,10 +12,10 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                          ================================================== -->
+                            ================================================== -->
 
   <!-- cart_section - start
-                          ================================================== -->
+                            ================================================== -->
   <section class="cart_section section_space">
     <div class="container">
       <div class="cart_update_wrap">
@@ -50,7 +50,12 @@
                   -
                   <span>{{ $cart->inventory->color->name }}</span>
                 </td>
-                <td class="text-center">$
+                <td class="text-center">
+                  @if ($cart->inventory->product->currency=='BDT')
+                    Tk
+                    @else
+                    $
+                  @endif
                   <span class="price_text base_price">
                     @if ($cart->inventory->product->sale_price)
                       {{ $cart->inventory->product->sale_price }}
@@ -85,15 +90,20 @@
                     </div>
                   </form>
                 </td>
-                <td class="text-center">$<span class="price_text price_total">
+                <td class="text-center">
+                  @if ($cart->inventory->product->currency=='BDT')
+                    Tk
+                    @else
+                    $
+                  @endif
+                  <span class="price_text price_total">
                     {{ (($cart->inventory->product->sale_price ?? $cart->inventory->product->price) + $cart->inventory->additional_price ?? '') * $cart->cart_quantity }}</span>
                 </td>
                 <td class="text-center">
                   <form action="{{ route('frontend.cart.delete', $cart->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="remove_btn"><i
-                      class="fal fa-trash-alt"></i></button>
+                    <button type="submit" class="remove_btn"><i class="fal fa-trash-alt"></i></button>
                   </form>
                 </td>
               </tr>
@@ -105,9 +115,11 @@
       <div class="cart_btns_wrap">
         <div class="row">
           <div class="col col-lg-6">
-            <form action="#">
+            <form action="{{ route('frontend.apply.coupon') }}" method="POST">
+              @csrf
               <div class="coupon_form form_item mb-0">
-                <input type="text" name="coupon" placeholder="Coupon Code...">
+                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                <input type="text" name="coupon" placeholder="Coupon Code..." value="{{ old('coupon') }}">
                 <button type="submit" class="btn btn_dark">Apply Coupon</button>
                 <div class="info_icon">
                   <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -164,12 +176,25 @@
             <ul class="ul_li_block">
               <li>
                 <span>Cart Subtotal</span>
-                <span>$52.50</span>
+                <span id="display_sub_total">
+                  @if ($cart->inventory->product->currency=='BDT')
+                    TK
+                    @else
+                    $
+                  @endif
+                  {{ $carts->sum('sub_total') }}
+                </span>
               </li>
               <li>
                 <span>Shipping and Handling</span>
                 <span>Free Shipping</span>
               </li>
+              @if (Session::has('coupon'))              
+              <li>
+                <span>Coupon({{ Session::get('coupon')['couponName'] }})</span>
+                <span>-{{ Session::get('coupon')['amount'] }}</span>
+              </li>
+            @endif
               <li>
                 <span>Order Total</span>
                 <span class="total_price">$52.50</span>
@@ -181,13 +206,14 @@
     </div>
   </section>
   <!-- cart_section - end
-                          ================================================== -->
+                            ================================================== -->
 @endsection
 @section('script')
   <script>
     //ajax
     $(function() {
       var input_number = $('.input_number');
+      var display_sub_total= $('#display_sub_total');
 
 
 
@@ -212,12 +238,14 @@
           data: {
             inventory_id: inventory_id,
             quantity: inc,
+            base_price: base_price,
             _token: '{{ csrf_token() }}',
           },
 
           datatype: 'json',
           success: function(data) {
             price_total.html(parseInt(base_price) * inc);
+           display_sub_total.html(data);
           }
         });
       });
@@ -238,12 +266,14 @@
           data: {
             inventory_id: inventory_id,
             quantity: inc,
+            base_price: base_price,
             _token: '{{ csrf_token() }}',
           },
 
           datatype: 'json',
           success: function(data) {
             price_total.html(parseInt(base_price) * inc);
+            display_sub_total.html(data);
           }
         });
       });

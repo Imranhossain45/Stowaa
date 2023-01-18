@@ -40,6 +40,7 @@
 
   <!-- custom - css include -->
   <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.6.15/sweetalert2.min.css">
   @yield('style')
 </head>
 
@@ -444,8 +445,10 @@
 
   <!-- custom - main-js -->
   <script src="{{ asset('frontend/js/main.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.6.15/sweetalert2.all.js"></script>
 
   @yield('script')
+  @include('flashmessage')
 </body>
 
 </html>
