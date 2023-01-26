@@ -92,4 +92,15 @@ class ShippingChargeController extends Controller
     {
         //
     }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\ShippingCharge  $shippingCharge
+     * @return \Illuminate\Http\Response
+     */
+    public function applyCharge(Request $request)
+    {
+        $shippingCharge=ShippingCharge::where('id', $request->location_id)->first();
+        return response()->json($shippingCharge);
+    }
 }

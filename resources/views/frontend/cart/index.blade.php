@@ -2,7 +2,7 @@
 @section('title', 'Cart')
 @section('content')
   <!-- breadcrumb_section - start
-                            ================================================== -->
+                                    ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -12,10 +12,10 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                            ================================================== -->
+                                    ================================================== -->
 
   <!-- cart_section - start
-                            ================================================== -->
+                                    ================================================== -->
   <section class="cart_section section_space">
     <div class="container">
       <div class="cart_update_wrap">
@@ -51,9 +51,9 @@
                   <span>{{ $cart->inventory->color->name }}</span>
                 </td>
                 <td class="text-center">
-                  @if ($cart->inventory->product->currency=='BDT')
+                  @if ($cart->inventory->product->currency == 'BDT')
                     Tk
-                    @else
+                  @else
                     $
                   @endif
                   <span class="price_text base_price">
@@ -78,6 +78,7 @@
                 <td class="text-center">
                   <form action="#">
                     <div class="quantity_input">
+                      <input type="hidden" class="cart_id" value="{{ $cart->id }}">
                       <input type="hidden" class="stock" value="{{ $cart->inventory->quantity }}">
                       <input type="hidden" class="inventory_id" value="{{ $cart->inventory->id }}">
                       <button type="button" class="input_number_decrement">
@@ -91,9 +92,9 @@
                   </form>
                 </td>
                 <td class="text-center">
-                  @if ($cart->inventory->product->currency=='BDT')
+                  @if ($cart->inventory->product->currency == 'BDT')
                     Tk
-                    @else
+                  @else
                     $
                   @endif
                   <span class="price_text price_total">
@@ -119,7 +120,9 @@
               @csrf
               <div class="coupon_form form_item mb-0">
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                <input type="text" name="coupon" placeholder="Coupon Code..." value="{{ old('coupon') }}">
+                
+                <input type="text" name="coupon" placeholder="Coupon Code..."
+                  value="{{ Session::has('coupon') ? Session::get('coupon')['couponName'] : '' }}">
                 <button type="submit" class="btn btn_dark">Apply Coupon</button>
                 <div class="info_icon">
                   <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -144,28 +147,13 @@
             <h3 class="wrap_title">Calculate Shipping <span class="icon"><i class="far fa-arrow-up"></i></span></h3>
             <form action="#">
               <div class="select_option clearfix">
-                <select>
-                  <option data-display="Select Your Currency">Select Your Option</option>
-                  <option value="1" selected>United Kingdom (UK)</option>
-                  <option value="2">United Kingdom (UK)</option>
-                  <option value="3">United Kingdom (UK)</option>
-                  <option value="4">United Kingdom (UK)</option>
-                  <option value="5">United Kingdom (UK)</option>
+                <select class="nice_select shipping_cost">
+                  <option disabled selected>Select Your Option</option>
+                  @foreach ($shippingcharges as $shippingcharge)
+                    <option value="{{ $shippingcharge->id }}">{{ $shippingcharge->location }}</option>
+                  @endforeach
                 </select>
               </div>
-              <div class="row">
-                <div class="col col-md-6">
-                  <div class="form_item">
-                    <input type="text" name="location" placeholder="State / Country">
-                  </div>
-                </div>
-                <div class="col col-md-6">
-                  <div class="form_item">
-                    <input type="text" name="postalcode" placeholder="Postcode / ZIP">
-                  </div>
-                </div>
-              </div>
-              <button type="submit" class="btn btn_primary rounded-pill">Update Total</button>
             </form>
           </div>
         </div>
@@ -177,27 +165,33 @@
               <li>
                 <span>Cart Subtotal</span>
                 <span id="display_sub_total">
-                  @if ($cart->inventory->product->currency=='BDT')
+                  @if ($cart->inventory->product->currency == 'BDT')
                     TK
-                    @else
+                  @else
                     $
                   @endif
                   {{ $carts->sum('sub_total') }}
                 </span>
               </li>
-              <li>
-                <span>Shipping and Handling</span>
-                <span>Free Shipping</span>
+              <li class="display_shipping_charge_list display_shipping_charge">
               </li>
-              @if (Session::has('coupon'))              
-              <li>
-                <span>Coupon({{ Session::get('coupon')['couponName'] }})</span>
-                <span>-{{ Session::get('coupon')['amount'] }}</span>
-              </li>
-            @endif
+              @if (Session::has('coupon'))
+                <li>
+                  <span>Coupon({{ Session::get('coupon')['couponName'] }})</span>
+                  <span>-{{ Session::get('coupon')['amount'] }}</span>
+                </li>
+              @endif
               <li>
                 <span>Order Total</span>
-                <span class="total_price">$52.50</span>
+                <span class="total_price">$
+                  <strong class="order_total">
+                    @if (Session::has('coupon'))
+                    {{ $carts->sum('sub_total') - Session::get('coupon')['amount'] }}
+                  @else
+                    {{ $carts->sum('sub_total') }}
+                  @endif
+                  </strong>
+                </span>
               </li>
             </ul>
           </div>
@@ -206,14 +200,16 @@
     </div>
   </section>
   <!-- cart_section - end
-                            ================================================== -->
+                                    ================================================== -->
 @endsection
 @section('script')
   <script>
     //ajax
     $(function() {
+      var order_total = $('.order_total');
+      var display_shipping_charge_list=$('.display_shipping_charge_list')
       var input_number = $('.input_number');
-      var display_sub_total= $('#display_sub_total');
+      var display_sub_total = $('#display_sub_total');
 
 
 
@@ -232,38 +228,12 @@
 
         child.val(inc);
         var inventory_id = $(this).parent('.quantity_input').children('.inventory_id').val();
+        var cart_id = $(this).parent('.quantity_input').children('.cart_id').val();
         $.ajax({
           url: "{{ route('frontend.cart.update') }}",
           type: 'POST',
           data: {
-            inventory_id: inventory_id,
-            quantity: inc,
-            base_price: base_price,
-            _token: '{{ csrf_token() }}',
-          },
-
-          datatype: 'json',
-          success: function(data) {
-            price_total.html(parseInt(base_price) * inc);
-           display_sub_total.html(data);
-          }
-        });
-      });
-      $('.input_number_decrement').on('click', function() {
-        var parent_row = $(this).parents('.parent_row');
-        var base_price = parent_row.children('td').find('.base_price').html();
-        var price_total = parent_row.children('td').find('.price_total');
-        var child = $(this).parent('.quantity_input').children('.input_number');
-        var inc = child.val();
-        if (inc > 1) {
-          inc--;
-        }
-        child.val(inc);
-        var inventory_id = $(this).parent('.quantity_input').children('.inventory_id').val();
-        $.ajax({
-          url: "{{ route('frontend.cart.update') }}",
-          type: 'POST',
-          data: {
+            cart_id: cart_id,
             inventory_id: inventory_id,
             quantity: inc,
             base_price: base_price,
@@ -276,6 +246,67 @@
             display_sub_total.html(data);
           }
         });
+      });
+
+      $('.input_number_decrement').on('click', function() {
+        var parent_row = $(this).parents('.parent_row');
+        var base_price = parent_row.children('td').find('.base_price').html();
+        var price_total = parent_row.children('td').find('.price_total');
+        var child = $(this).parent('.quantity_input').children('.input_number');
+        var inc = child.val();
+        if (inc > 1) {
+          inc--;
+        }
+        child.val(inc);
+        var inventory_id = $(this).parent('.quantity_input').children('.inventory_id').val();
+        var cart_id = $(this).parent('.quantity_input').children('.cart_id').val();
+        $.ajax({
+          url: "{{ route('frontend.cart.update') }}",
+          type: 'POST',
+          data: {
+            cart_id: cart_id,
+            inventory_id: inventory_id,
+            quantity: inc,
+            base_price: base_price,
+            _token: '{{ csrf_token() }}',
+          },
+
+          datatype: 'json',
+          success: function(data) {
+            price_total.html(parseInt(base_price) * inc);
+            display_sub_total.html(data);
+          }
+        });
+      });
+
+      /* shipping_cost */
+      
+      $('.shipping_cost').on('change', function() {
+        $.ajax({
+          url: "{{ route('frontend.apply.charge') }}",
+          type: 'POST',
+          data: {
+            location_id: $('.shipping_cost').val(),
+            _token: '{{ csrf_token() }}',
+          },
+
+          datatype: 'json',
+          success: function(data) {
+            if (parseInt(data.charge) === 0) {
+              display_shipping_charge_list.html(
+                '<span>Shipping and Handling</span><span class="display_shipping_charge">Free</span>'
+              );
+            } else {
+              $('.display_shipping_charge').html(
+                '<span>Shipping and Handling</span><span class="display_shipping_charge">' + parseInt(
+                  data.charge) + '</span>'
+              );
+            }
+            var total = parseInt(order_total.html()) + parseInt(data.charge);
+           order_total.html(total);
+          }
+        });
+        
       });
     })
   </script>

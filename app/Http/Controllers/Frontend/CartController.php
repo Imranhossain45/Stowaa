@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Inventory;
+use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -17,7 +18,8 @@ class CartController extends Controller
     public function index()
     {
         $carts=Cart::where('user_id',auth()->user()->id)->get();
-        return view('frontend.cart.index',compact('carts'));
+        $shippingcharges=ShippingCharge::all();
+        return view('frontend.cart.index',compact('carts', 'shippingcharges'));
     }
 
     /**
@@ -87,7 +89,7 @@ class CartController extends Controller
      */
     public function update(Request $request)
     {
-        $cart=Cart::where('inventory_id',$request->inventory_id)->where('user_id', auth()->user()->id)->first();
+        $cart=Cart::where('inventory_id',$request->inventory_id)->where('id',$request->cart_id)->where('user_id', auth()->user()->id)->first();
         $cart->update([
             "cart_quantity"=>$request->quantity,
             "sub_total"=>$request->quantity * $request->base_price,

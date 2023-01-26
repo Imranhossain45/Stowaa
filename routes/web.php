@@ -58,6 +58,7 @@ Route::name('frontend.')->group(function () {
         Route::delete('/delete/{cart}', 'destroy')->name('delete');
     });
     Route::post('apply/coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+    Route::post('apply/charge', [ShippingChargeController::class, 'applyCharge'])->name('apply.charge');
 });
 
 
