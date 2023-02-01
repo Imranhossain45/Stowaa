@@ -18,6 +18,7 @@ class CartController extends Controller
     public function index()
     {
         $carts=Cart::where('user_id',auth()->user()->id)->get();
+        
         $shippingcharges=ShippingCharge::all();
         return view('frontend.cart.index',compact('carts', 'shippingcharges'));
     }
@@ -90,11 +91,13 @@ class CartController extends Controller
     public function update(Request $request)
     {
         $cart=Cart::where('inventory_id',$request->inventory_id)->where('id',$request->cart_id)->where('user_id', auth()->user()->id)->first();
+        
         $cart->update([
             "cart_quantity"=>$request->quantity,
             "sub_total"=>$request->quantity * $request->base_price,
+            
         ]);
-        $quan= $cart->cart_quantity;
+        /* $quan= $cart->cart_quantity; */
         $subTotal=$cart->sum('sub_total');
         return response()->json($subTotal);
     }
@@ -109,5 +112,15 @@ class CartController extends Controller
     {
         $cart->delete();
         return back()->with('success', "Cart Delete Successfull!");
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Cart  $cart
+     * @return \Illuminate\Http\Response
+     */
+    public function checkoutView()
+    {        
+        return view('frontend.cart.checkout');
     }
 }

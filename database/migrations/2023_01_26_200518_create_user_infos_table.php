@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('city');
             $table->string('zip')->nullable();
+            $table->string('photo')->nullable();
             $table->string('notes')->nullable();
             $table->softDeletes();
             $table->timestamps();

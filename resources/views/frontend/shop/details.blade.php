@@ -76,6 +76,8 @@
                   @else
                     Tk
                   @endif
+                  {{ $product->sale_price }}
+                  @else
                   {{ $product->price }}
                 @endif
               </del>
@@ -726,7 +728,7 @@
       var original_price = {{ $product->sale_price ?? $product->price }};
 
       $('.input_number_increment').on('click', function() {
-        if (inc < stock_limit.html()) {
+        if (inc < parseInt(stock_limit.html())) {
           inc++;
         }
         input_number.val(inc);

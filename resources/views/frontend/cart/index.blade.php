@@ -58,19 +58,20 @@
                   @endif
                   <span class="price_text base_price">
                     @if ($cart->inventory->product->sale_price)
-                      {{ $cart->inventory->product->sale_price }}
+                      {{ $cart->inventory->product->sale_price + $cart->inventory->additional_price ?? ''  }}
                     @else
-                      {{ $cart->inventory->product->price }}
+                      {{ $cart->inventory->product->price + $cart->inventory->additional_price ?? ''   }}
                     @endif
 
                   </span>
                 </td>
-                <td>
-                  @if ($cart->inventory->additional_price)
+                <td>                  
+                    @if ($cart->inventory->additional_price)
                     {{ $cart->inventory->additional_price }}
                   @else
                     --
                   @endif
+                  
                 </td>
                 <td>
                   <span>{{ $cart->inventory->quantity }}</span>
@@ -135,7 +136,7 @@
           <div class="col col-lg-6">
             <ul class="btns_group ul_li_right">
               <li><a class="btn border_black" href="#!">Update Cart</a></li>
-              <li><a class="btn btn_dark" href="#!">Prceed To Checkout</a></li>
+              <li><a class="btn btn_dark" href="{{ route('frontend.cart.checkout.view') }}">Prceed To Checkout</a></li>
             </ul>
           </div>
         </div>
@@ -298,7 +299,7 @@
               );
             } else {
               $('.display_shipping_charge').html(
-                '<span>Shipping and Handling</span><span class="display_shipping_charge">' + parseInt(
+                '<span>Shipping and Handling</span><span class="display_shipping_charge">+' + parseInt(
                   data.charge) + '</span>'
               );
             }

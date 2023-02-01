@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
-use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
+use App\Models\ShippingCharge;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class ShippingChargeController extends Controller
 {
@@ -101,6 +102,7 @@ class ShippingChargeController extends Controller
     public function applyCharge(Request $request)
     {
         $shippingCharge=ShippingCharge::where('id', $request->location_id)->first();
+        Session::put('shipping_charge', $shippingCharge->charge);
         return response()->json($shippingCharge);
     }
 }

@@ -51,11 +51,13 @@ Route::name('frontend.')->group(function () {
         Route::post('/shop/single/color', 'shopColor')->name('color');
         Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');
     });
-    Route::controller(CartController::class)->prefix('cart')->name('cart.')->group(function () {
+    Route::controller(CartController::class)->middleware(['auth','verified'])->prefix('cart')->name('cart.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
         Route::post('/update', 'update')->name('update');
         Route::delete('/delete/{cart}', 'destroy')->name('delete');
+        
+        Route::get('checkout', 'checkoutView')->name('checkout.view');
     });
     Route::post('apply/coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
     Route::post('apply/charge', [ShippingChargeController::class, 'applyCharge'])->name('apply.charge');
@@ -65,7 +67,7 @@ Route::name('frontend.')->group(function () {
 
 
 /* Backend Routes */
-Route::prefix('dashboard')->name('backend.')->group(function () {
+Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [BackendController::class, 'dashboardIndex'])->middleware('verified')->name('home');
 
     /* Role and Permission */

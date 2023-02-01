@@ -36,7 +36,8 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/nice-select.css') }}">
 
   <!-- woocommercen - css include -->
-  <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/woocommerce.css') }}">
+  {{-- <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/woocommerce.css') }}"> --}}
+  <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/woocommerce-2.css') }}">
 
   <!-- custom - css include -->
   <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/style.css') }}">
