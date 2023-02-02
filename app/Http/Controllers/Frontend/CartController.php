@@ -120,7 +120,8 @@ class CartController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function checkoutView()
-    {        
-        return view('frontend.cart.checkout');
+    {
+        $carts = Cart::with('inventory')->where('user_id', auth()->user()->id)->get();   
+        return view('frontend.cart.checkout',compact('carts'));
     }
 }

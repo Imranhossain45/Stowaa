@@ -125,6 +125,7 @@
                 <input type="text" name="coupon" placeholder="Coupon Code..."
                   value="{{ Session::has('coupon') ? Session::get('coupon')['couponName'] : '' }}">
                 <button type="submit" class="btn btn_dark">Apply Coupon</button>
+                
                 <div class="info_icon">
                   <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top"
                     title="Your Info Here"></i>
@@ -135,7 +136,7 @@
 
           <div class="col col-lg-6">
             <ul class="btns_group ul_li_right">
-              <li><a class="btn border_black" href="#!">Update Cart</a></li>
+              
               <li><a class="btn btn_dark" href="{{ route('frontend.cart.checkout.view') }}">Prceed To Checkout</a></li>
             </ul>
           </div>
