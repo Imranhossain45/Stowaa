@@ -1,24 +1,25 @@
 <?php
 
-use App\Http\Controllers\Backend\BackendController;
-use App\Http\Controllers\Backend\CategoryController;
-use App\Http\Controllers\Backend\ColorController;
-use App\Http\Controllers\Backend\CouponController;
-use App\Http\Controllers\Backend\InventoryController;
-use App\Http\Controllers\Backend\ProductController;
-use App\Http\Controllers\Backend\RolePermissionController;
-use App\Http\Controllers\Backend\ShippingChargeController;
-use App\Http\Controllers\Backend\SizeController;
-use App\Http\Controllers\Frontend\CartController;
-use App\Http\Controllers\Frontend\FrontendController;
-use App\Http\Controllers\Frontend\ShopController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserAuth\UserAuthController;
 use Spatie\Permission\Models\Permission;
+use App\Http\Controllers\Backend\SizeController;
+use App\Http\Controllers\Backend\ColorController;
+use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\ShopController;
+use App\Http\Controllers\Backend\CouponController;
+use App\Http\Controllers\Backend\BackendController;
+use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\InventoryController;
+use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\UserAuth\UserAuthController;
+use App\Http\Controllers\Backend\RolePermissionController;
+use App\Http\Controllers\Backend\ShippingChargeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -158,3 +159,16 @@ Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->
 /* User Auth */
 Route::get('/user/login', [UserAuthController::class, "login"])->name('user.login');
 Route::get('/user/registration', [UserAuthController::class, "registration"])->name('user.registration');
+
+
+
+// SSLCOMMERZ Start
+
+Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
+
+Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+//SSLCOMMERZ END
