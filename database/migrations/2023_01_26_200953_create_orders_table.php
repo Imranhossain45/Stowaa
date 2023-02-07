@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('coupon_amount')->nullable();
             $table->decimal('shipping_charge')->nullable();
             $table->decimal('total');            
+            $table->longText('order_note');            
             $table->string('order_status')->default('unpaid')->comment('unpaid,paid');
             $table->string('status')->default('processing')->comment('processing,complete');
             $table->softDeletes();

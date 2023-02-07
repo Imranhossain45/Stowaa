@@ -2,7 +2,7 @@
 @section('title', 'Checkout')
 @section('content')
   <!-- breadcrumb_section - start
-                                ================================================== -->
+                                        ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -12,11 +12,11 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                                ================================================== -->
+                                        ================================================== -->
 
 
   <!-- checkout-section - start
-                                ================================================== -->
+                                        ================================================== -->
   <section class="checkout-section section_space">
     <div class="container">
       <div class="row">
@@ -24,7 +24,8 @@
           <div class="woocommerce">
             <div class="woocommerce-info">Have a coupon? <a href="#" class="showcoupon">Click here to enter your
                 code</a></div>
-            <form action="{{ url('/pay') }}" method="post" class="checkout woocommerce-checkout needs-validation" enctype="multipart/form-data">
+            <form action="{{ url('/pay') }}" method="POST" class="checkout woocommerce-checkout needs-validation"
+              enctype="multipart/form-data">
               @csrf
               <div class="col2-set" id="customer_details">
                 <div class="coll-1">
@@ -33,7 +34,7 @@
                     <p class="form-row form-row form-row-wide validate-required" id="billing_first_name_field">
                       <label for="billing_name" class="">Name <abbr class="required"
                           title="required">*</abbr></label>
-                      <input type="text" class="input-text " name="billing_first_name" id="billing_first_name"
+                      <input type="text" class="input-text " name="billing_name" id="billing_name"
                         placeholder="Full Name" autocomplete="given-name" value="{{ auth()->user()->name }}" />
                     </p>
                     <div class="clear"></div>
@@ -43,39 +44,39 @@
                       <input type="email" class="input-text " name="billing_email" id="billing_email" placeholder=""
                         autocomplete="email" value="{{ auth()->user()->email }}" />
                     </p>
-                    <p class="form-row form-row form-row-last validate-required validate-phone" id="billing_phone_field">
+                    <p class="form-row form-row form-row-last validate-required validate-phone" id="billing_phone">
                       <label for="billing_phone" class="">Phone <abbr class="required"
                           title="required">*</abbr></label>
                       <input type="tel" class="input-text " name="billing_phone" id="billing_phone" placeholder=""
-                        autocomplete="tel" value="" />
+                        autocomplete="tel" value="{{ auth()->user()->user_info->phone ?? '' }}" />
                     </p>
                     <div class="clear"></div>
                     <p class="form-row form-row form-row-wide address-field validate-required"
-                      id="billing_address_1_field">
+                      id="billing_address_1">
                       <label for="billing_address_1" class="">Address <abbr class="required"
                           title="required">*</abbr></label>
                       <input type="text" class="input-text " name="billing_address_1" id="billing_address_1"
-                        placeholder="Apartment,Street,Colony,Region" autocomplete="address-line1" value="" />
+                        placeholder="Apartment,Street,Colony,Region" autocomplete="address-line1" value="{{ auth()->user()->user_info->address ?? '' }}" />
                     </p>
                     <p class="form-row form-row address-field validate-postcode validate-required form-row-first  woocommerce-invalid-required-field"
-                      id="billing_city_field">
+                      id="billing_city">
                       <label for="billing_city" class="">City <abbr class="required"
                           title="required">*</abbr></label>
-                      <input type="text" class="input-text " name="billing_city" id="billing_city" placeholder=""
-                        autocomplete="address-level2" value="" />
+                      <input type="text" class="input-text " name="billing_city" id="billing_city" placeholder="Enter Your City"
+                        autocomplete="address-level2" value="{{ auth()->user()->user_info->city ?? '' }}" />
                     </p>
                     <p class="form-row form-row form-row-last address-field validate-required validate-postcode"
-                      id="billing_postcode_field">
+                      id="billing_postcode">
                       <label for="billing_postcode" class="">Postcode / ZIP <abbr class="required"
                           title="required">*</abbr></label>
-                      <input type="text" class="input-text " name="billing_postcode8" id="billing_postcode"
-                        placeholder="" autocomplete="postal-code" value="" />
+                      <input type="text" class="input-text " name="billing_postcode" id="billing_postcode"
+                        placeholder="" autocomplete="postal-code" value="{{ auth()->user()->user_info->zip ?? '' }}" />
                     </p>
 
-                    <p class="form-row form-row notes" id="order_comments_field">
-                      <label for="order_comments" class="">Order Notes</label>
-                      <textarea name="order_comments" class="input-text " id="order_comments"
-                        placeholder="Notes about your order, e.g. special notes for delivery." rows="2" cols="5"></textarea>
+                    <p class="form-row form-row notes" id="billing_notes">
+                      <label for="billing_notes" class="">Order Notes</label>
+                      <textarea name="order_comments" class="input-text" name="billing_notes" id="billing_notes"
+                        placeholder="Notes about your order, e.g. special notes for delivery." rows="2" cols="5">{{ auth()->user()->user_info->notes ?? '' }}</textarea>
                     </p>
                   </div>
                 </div>
@@ -110,17 +111,17 @@
                           placeholder="Apartment,Street,Colony,Region" autocomplete="address-line1" value="" />
                       </p>
                       <p class="form-row form-row address-field validate-postcode validate-required form-row-first  woocommerce-invalid-required-field"
-                        id="billing_city_field2">
-                        <label for="billing_city" class="">Town / City <abbr class="required"
+                        id="shipping_city_field2">
+                        <label for="shipping_city" class="">Town / City <abbr class="required"
                             title="required">*</abbr></label>
-                        <input type="text" class="input-text " name="billing_city" id="billing_city3"
+                        <input type="text" class="input-text " name="shipping_city" id="shipping_city"
                           placeholder="" autocomplete="address-level2" value="" />
                       </p>
                       <p class="form-row form-row form-row-last address-field validate-required validate-postcode"
-                        id="billing_postcode_field17">
-                        <label for="billing_postcode" class="">Postcode / ZIP <abbr class="required"
+                        id="shipping_postcode">
+                        <label for="shipping_postcode" class="">Postcode / ZIP <abbr class="required"
                             title="required">*</abbr></label>
-                        <input type="text" class="input-text " name="billing_postcode" id="billing_postcode4"
+                        <input type="text" class="input-text " name="shipping_postcode" id="shipping_postcode"
                           placeholder="" autocomplete="postal-code" value="" />
                       </p>
                       <div class="clear"></div>
@@ -187,10 +188,10 @@
                       <th>Total</th>
                       <td><strong><span class="woocommerce-Price-amount amount"><span
                               class="woocommerce-Price-currencySymbol">$</span>
-                            @if (Session::has('shipping_charge'))
-                              {{ $cart->sum('sub_total') + Session::get('shipping_charge') }}
-                            @elseif (Session::has('shipping_charge') && Session::has('coupon'))
+                            @if (Session::get('shipping_charge') && Session::get('coupon'))
                               {{ $cart->sum('sub_total') + Session::get('shipping_charge') - Session::get('coupon')['amount'] }}
+                            @else
+                              {{ $cart->sum('sub_total') + Session::get('shipping_charge') }}
                             @endif
 
                           </span></strong> </td>
@@ -218,12 +219,12 @@
                       postdata="" order="If you already have the transaction generated for current order"
                       endpoint="/pay-via-ajax">Place order</button> --}}
 
-                     
 
-                    
-                      <button type="submit" class="button alt">Place order</button>
-                    
-                    
+
+
+                    <button type="submit" class="button alt">Place order</button>
+
+
                   </div>
                 </div>
               </div>
@@ -234,7 +235,7 @@
     </div>
   </section>
   <!-- checkout-section - end
-                                ================================================== -->
+                                        ================================================== -->
 @endsection
 
 @section('script')

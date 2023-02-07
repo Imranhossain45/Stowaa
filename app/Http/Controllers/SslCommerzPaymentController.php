@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use App\Library\SslCommerz\SslCommerzNotification;
+use App\Models\InventoryOrder;
 
 class SslCommerzPaymentController extends Controller
 {
 
-    public function exampleEasyCheckout()
+    /* public function exampleEasyCheckout()
     {
         return view('exampleEasycheckout');
     }
@@ -17,26 +22,60 @@ class SslCommerzPaymentController extends Controller
     public function exampleHostedCheckout()
     {
         return view('exampleHosted');
-    }
+    } */
 
     public function index(Request $request)
     {
+        
+        $request->validate([
+            "billing_phone" => 'required',
+            "billing_address_1" => 'required',
+            "billing_city" => 'required',
+            "billing_postcode" => 'nullable',
+        ]);
+
+        UserInfo::updateOrCreate([
+            'user_id' => auth()->user()->id,
+        ], [
+            'user_id' => auth()->user()->id,
+            "phone" => $request->billing_phone,
+            "address" => $request->billing_address_1,
+            "city" => $request->billing_city,
+            "zip" => $request->billing_postcode,
+        ]);        
+        
+        /* cart information */
+        $carts=Cart::where('user_id', auth()->user()->id)->get();
+        $sub_total=0;
+        foreach($carts as $cart){
+            if($cart->cart_quantity > $cart->inventory->quantity){
+                return back()->with('error','This number of Stock not available');
+            }
+            $price= (($cart->inventory->product->sale_price ?? $cart->inventory->product->price) + $cart->inventory->additional_price ?? 0) * $cart->cart_quantity;
+            $sub_total+= $price;
+        }
+        if(Session::get('shipping_charge') && Session::get('coupon')['amount']){
+            $grant_total=$sub_total + Session::get('shipping_charge')- Session::get('coupon')['amount'];
+        }else{
+            $grant_total= $carts->sum('sub_total')+ Session::get('shipping_charge');
+        }
+        return back()->with('success', 'Insert Successful!');
 
         $post_data = array();
-        $post_data['total_amount'] = '10'; 
-        $post_data['currency'] = "BDT";
-        $post_data['tran_id'] = uniqid(); 
+        $post_data['total_amount'] = $grant_total;
+        $post_data['currency'] = "USD";
+        $post_data['tran_id'] = uniqid();
 
         # CUSTOMER INFORMATION
-        $post_data['cus_name'] = 'Customer Name';
-        $post_data['cus_email'] = 'customer@mail.com';
-        $post_data['cus_add1'] = 'Customer Address';
+        $post_data['cus_name'] = auth()->user()->name;
+        $post_data['cus_email'] = auth()->user()->email;
+        $post_data['cus_add1'] = auth()->user()->user_info->address;
         $post_data['cus_add2'] = "";
-        $post_data['cus_city'] = "";
+        $post_data['cus_city'] = auth()->user()->user_info->city;
         $post_data['cus_state'] = "";
-        $post_data['cus_postcode'] = "";
+        $post_data['cus_postcode'] = auth()->user()->user_info->zip;
         $post_data['cus_country'] = "Bangladesh";
-        $post_data['cus_phone'] = '8801XXXXXXXXX';
+        $post_data['cus_phone'] = auth()->user()->user_info->phone;
         $post_data['cus_fax'] = "";
 
         # SHIPMENT INFORMATION
@@ -60,8 +99,29 @@ class SslCommerzPaymentController extends Controller
         $post_data['value_c'] = "ref003";
         $post_data['value_d'] = "ref004";
 
-        #Before  going to initiate the payment order status need to insert or update as Pending.
-        $update_product = DB::table('orders')
+        /* order information */
+        $insert_order=Order::create([
+            'user_id'=>auth()->user()->id,
+            'transaction_id'=> $post_data['tran_id'],
+            'coupon_name'=> Session::get('coupon')['name'] ?? null,
+            'coupon_amount'=> Session::get('coupon')['amount']??0,
+            'shipping_charge'=> Session::get('shipping_charge'),
+            'total' => $post_data['total_amount'],
+            'order_note' => $request->billing_notes,
+            'order_status' => 'Pending',
+        ]);
+        if($insert_order){
+            foreach($carts as $cart){
+                InventoryOrder::create([
+                    'order_id'=> $insert_order->id,
+                    'inventory_id'=> $cart->inventory_id,
+                    'order_quantity'=> $cart->cart_quantity,
+                    'order_amount'=> ($cart->inventory->product->sale_price ?? $cart->inventory->product->price) + $cart->inventory->additional_price ?? 0,
+                ]);
+            }
+        }
+        
+        /* $update_product = DB::table('orders')
             ->where('transaction_id', $post_data['tran_id'])
             ->updateOrInsert([
                 'name' => $post_data['cus_name'],
@@ -72,7 +132,7 @@ class SslCommerzPaymentController extends Controller
                 'address' => $post_data['cus_add1'],
                 'transaction_id' => $post_data['tran_id'],
                 'currency' => $post_data['currency']
-            ]);
+            ]); */
 
         $sslc = new SslCommerzNotification();
         $payment_options = $sslc->makePayment($post_data, 'hosted');
@@ -81,10 +141,9 @@ class SslCommerzPaymentController extends Controller
             print_r($payment_options);
             $payment_options = array();
         }
-
     }
 
-    
+
 
     public function success(Request $request)
     {
@@ -96,7 +155,7 @@ class SslCommerzPaymentController extends Controller
 
         $sslc = new SslCommerzNotification();
 
-      
+
         $order_details = DB::table('orders')
             ->where('transaction_id', $tran_id)
             ->select('transaction_id', 'status', 'currency', 'amount')->first();
@@ -105,7 +164,7 @@ class SslCommerzPaymentController extends Controller
             $validation = $sslc->orderValidate($request->all(), $tran_id, $amount, $currency);
 
             if ($validation) {
-                
+
                 $update_product = DB::table('orders')
                     ->where('transaction_id', $tran_id)
                     ->update(['status' => 'Processing']);
@@ -113,14 +172,12 @@ class SslCommerzPaymentController extends Controller
                 echo "<br >Transaction is successfully Completed";
             }
         } else if ($order_details->status == 'Processing' || $order_details->status == 'Complete') {
-            
+
             echo "Transaction is successfully Completed";
         } else {
-            
+
             echo "Invalid Transaction";
         }
-
-
     }
 
     public function fail(Request $request)
@@ -141,7 +198,6 @@ class SslCommerzPaymentController extends Controller
         } else {
             echo "Transaction is Invalid";
         }
-
     }
 
     public function cancel(Request $request)
@@ -162,15 +218,12 @@ class SslCommerzPaymentController extends Controller
         } else {
             echo "Transaction is Invalid";
         }
-
-
     }
 
     public function ipn(Request $request)
     {
-        
-        if ($request->input('tran_id'))
-        {
+
+        if ($request->input('tran_id')) {
 
             $tran_id = $request->input('tran_id');
 
@@ -208,5 +261,4 @@ class SslCommerzPaymentController extends Controller
             echo "Invalid Data";
         }
     }
-
 }
