@@ -114,7 +114,7 @@ class CouponController extends Controller
             return back()->with('warning', 'Coupon not valid! Amount must be getter than '.$coupon->limit); 
         }else{
             $coupon=[
-               'couponName'=> $coupon->name,
+               'name'=> $coupon->name,
                'amount'=> $coupon->discount, 
             ];
             Session::put('coupon',$coupon);

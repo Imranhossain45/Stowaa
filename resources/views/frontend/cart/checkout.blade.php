@@ -75,7 +75,7 @@
 
                     <p class="form-row form-row notes" id="billing_notes">
                       <label for="billing_notes" class="">Order Notes</label>
-                      <textarea name="order_comments" class="input-text" name="billing_notes" id="billing_notes"
+                      <textarea class="input-text" name="billing_notes" id="billing_notes"
                         placeholder="Notes about your order, e.g. special notes for delivery." rows="2" cols="5">{{ auth()->user()->user_info->notes ?? '' }}</textarea>
                     </p>
                   </div>
@@ -83,12 +83,15 @@
                 <div class="coll-2">
                   <div class="woocommerce-shipping-fields">
                     <h3 id="ship-to-different-address">
-                      <label for="ship-to-different-address-checkbox" class="checkbox">Ship to a different
-                        address?</label>
+                      <label class="checkbox" data-bs-toggle="collapse" data-bs-target="#display_shipping_address">Ship to a different
+                        address?
                       <input id="ship-to-different-address-checkbox" class="input-checkbox" type="checkbox"
                         name="ship_to_different_address" value="1" />
+                        </label>
                     </h3>
-                    <div class="shipping_address">
+                    <div class="shipping_address collapse" id="display_shipping_address">
+                      
+                      <div class="clear"></div>
                       <p class="form-row form-row form-row-wide validate-required" id="shipping_first_name_field">
                         <label for="shipping_first_name" class="">Name <abbr class="required"
                             title="required">*</abbr></label>
@@ -107,7 +110,7 @@
                         id="shipping_address_1_field">
                         <label for="shipping_address_1" class="">Address <abbr class="required"
                             title="required">*</abbr></label>
-                        <input type="text" class="input-text " name="shipping_address_1" id="shipping_address_1"
+                        <input type="text" class="input-text " name="shipping_address" id="shipping_address_1"
                           placeholder="Apartment,Street,Colony,Region" autocomplete="address-line1" value="" />
                       </p>
                       <p class="form-row form-row address-field validate-postcode validate-required form-row-first  woocommerce-invalid-required-field"
@@ -215,9 +218,7 @@
                     </li>
                   </ul>
                   <div class="form-row place-order">
-                    {{-- <button class="button alt" id="sslczPayBtn" token="if you have any token validation"
-                      postdata="" order="If you already have the transaction generated for current order"
-                      endpoint="/pay-via-ajax">Place order</button> --}}
+                    
 
 
 

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Library\SslCommerz\SslCommerzNotification;
 use App\Models\InventoryOrder;
+use App\Models\ShippingInfo;
 
 class SslCommerzPaymentController extends Controller
 {
@@ -32,6 +33,7 @@ class SslCommerzPaymentController extends Controller
             "billing_address_1" => 'required',
             "billing_city" => 'required',
             "billing_postcode" => 'nullable',
+            "billing_notes" => 'nullable',
         ]);
 
         UserInfo::updateOrCreate([
@@ -59,7 +61,7 @@ class SslCommerzPaymentController extends Controller
         }else{
             $grant_total= $carts->sum('sub_total')+ Session::get('shipping_charge');
         }
-        return back()->with('success', 'Insert Successful!');
+        
 
         $post_data = array();
         $post_data['total_amount'] = $grant_total;
@@ -103,12 +105,13 @@ class SslCommerzPaymentController extends Controller
         $insert_order=Order::create([
             'user_id'=>auth()->user()->id,
             'transaction_id'=> $post_data['tran_id'],
-            'coupon_name'=> Session::get('coupon')['name'] ?? null,
+            'coupon_name'=> Session::get('coupon')['couponName'] ?? null,
             'coupon_amount'=> Session::get('coupon')['amount']??0,
             'shipping_charge'=> Session::get('shipping_charge'),
             'total' => $post_data['total_amount'],
             'order_note' => $request->billing_notes,
             'order_status' => 'Pending',
+            'payment_status' => 'Unpaid',
         ]);
         if($insert_order){
             foreach($carts as $cart){
@@ -117,22 +120,32 @@ class SslCommerzPaymentController extends Controller
                     'inventory_id'=> $cart->inventory_id,
                     'order_quantity'=> $cart->cart_quantity,
                     'order_amount'=> ($cart->inventory->product->sale_price ?? $cart->inventory->product->price) + $cart->inventory->additional_price ?? 0,
+                    'additional_amount'=> $cart->inventory->additional_price ?? null,
                 ]);
             }
         }
-        
-        /* $update_product = DB::table('orders')
-            ->where('transaction_id', $post_data['tran_id'])
-            ->updateOrInsert([
-                'name' => $post_data['cus_name'],
-                'email' => $post_data['cus_email'],
-                'phone' => $post_data['cus_phone'],
-                'amount' => $post_data['total_amount'],
-                'status' => 'Pending',
-                'address' => $post_data['cus_add1'],
-                'transaction_id' => $post_data['tran_id'],
-                'currency' => $post_data['currency']
-            ]); */
+        if($request->ship_to_different_address && $insert_order){
+            $request->validate([
+                "shipping_name"=>'required',
+                "shipping_phone"=>'required',
+                "shipping_address"=>'required',
+                "shipping_address"=>'required',
+                "shipping_city"=>'required',
+                "shipping_postcode"=>'nullable',
+                "order_comments"=>'nullable'
+            ]);
+            ShippingInfo::create([
+                "user_id" => auth()->user()->id,
+                "order_id"=>$insert_order->id,
+                "name"=>$request->shipping_name,
+                "phone"=>$request->shipping_phone,
+                "address"=>$request->shipping_address,
+                "city"=>$request->shipping_city,
+                "zip"=>$request->shipping_postcode,
+                "notes"=>$request->order_comments,
+            ]);
+        }
+
 
         $sslc = new SslCommerzNotification();
         $payment_options = $sslc->makePayment($post_data, 'hosted');
@@ -141,6 +154,7 @@ class SslCommerzPaymentController extends Controller
             print_r($payment_options);
             $payment_options = array();
         }
+        /* return back()->with('success', 'Insert Successful!'); */
     }
 
 

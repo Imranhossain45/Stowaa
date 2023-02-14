@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('order_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('name');
             $table->string('phone');
             $table->string('address');
             $table->string('city');

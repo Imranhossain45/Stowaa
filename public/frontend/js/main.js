@@ -899,7 +899,7 @@
     /*------------------------------------------
         = woocommerce
     -------------------------------------------*/
-    if($(".checkout-section").length) {        
+    /* if($(".checkout-section").length) {        
         var showLogInBtn = $(".woocommerce-info > a");
         var showCouponBtn = $(".showcoupon");
         var shipDifferentAddressBtn = $("#ship-to-different-address");
@@ -927,7 +927,7 @@
             shippingAddress.slideToggle();
             event3.stopPropagation();
         })
-    }
+    } */
 
 
 
