@@ -2,7 +2,7 @@
 @section('title', 'Checkout')
 @section('content')
   <!-- breadcrumb_section - start
-                                        ================================================== -->
+                                          ================================================== -->
   <div class="breadcrumb_section">
     <div class="container">
       <ul class="breadcrumb_nav ul_li">
@@ -12,11 +12,11 @@
     </div>
   </div>
   <!-- breadcrumb_section - end
-                                        ================================================== -->
+                                          ================================================== -->
 
 
   <!-- checkout-section - start
-                                        ================================================== -->
+                                          ================================================== -->
   <section class="checkout-section section_space">
     <div class="container">
       <div class="row">
@@ -51,19 +51,20 @@
                         autocomplete="tel" value="{{ auth()->user()->user_info->phone ?? '' }}" />
                     </p>
                     <div class="clear"></div>
-                    <p class="form-row form-row form-row-wide address-field validate-required"
-                      id="billing_address_1">
+                    <p class="form-row form-row form-row-wide address-field validate-required" id="billing_address_1">
                       <label for="billing_address_1" class="">Address <abbr class="required"
                           title="required">*</abbr></label>
                       <input type="text" class="input-text " name="billing_address_1" id="billing_address_1"
-                        placeholder="Apartment,Street,Colony,Region" autocomplete="address-line1" value="{{ auth()->user()->user_info->address ?? '' }}" />
+                        placeholder="Apartment,Street,Colony,Region" autocomplete="address-line1"
+                        value="{{ auth()->user()->user_info->address ?? '' }}" />
                     </p>
                     <p class="form-row form-row address-field validate-postcode validate-required form-row-first  woocommerce-invalid-required-field"
                       id="billing_city">
                       <label for="billing_city" class="">City <abbr class="required"
                           title="required">*</abbr></label>
-                      <input type="text" class="input-text " name="billing_city" id="billing_city" placeholder="Enter Your City"
-                        autocomplete="address-level2" value="{{ auth()->user()->user_info->city ?? '' }}" />
+                      <input type="text" class="input-text " name="billing_city" id="billing_city"
+                        placeholder="Enter Your City" autocomplete="address-level2"
+                        value="{{ auth()->user()->user_info->city ?? '' }}" />
                     </p>
                     <p class="form-row form-row form-row-last address-field validate-required validate-postcode"
                       id="billing_postcode">
@@ -83,14 +84,15 @@
                 <div class="coll-2">
                   <div class="woocommerce-shipping-fields">
                     <h3 id="ship-to-different-address">
-                      <label class="checkbox" data-bs-toggle="collapse" data-bs-target="#display_shipping_address">Ship to a different
+                      <label class="checkbox" data-bs-toggle="collapse" data-bs-target="#display_shipping_address">Ship
+                        to a different
                         address?
-                      <input id="ship-to-different-address-checkbox" class="input-checkbox" type="checkbox"
-                        name="ship_to_different_address" value="1" />
-                        </label>
+                        <input id="ship-to-different-address-checkbox" class="input-checkbox" type="checkbox"
+                          name="ship_to_different_address" value="1" />
+                      </label>
                     </h3>
                     <div class="shipping_address collapse" id="display_shipping_address">
-                      
+
                       <div class="clear"></div>
                       <p class="form-row form-row form-row-wide validate-required" id="shipping_first_name_field">
                         <label for="shipping_first_name" class="">Name <abbr class="required"
@@ -181,7 +183,7 @@
                     @endif
                     @if (Session::has('coupon'))
                       <tr class="shipping">
-                        <th>Coupon({{ Session::get('coupon')['couponName'] }})</th>
+                        <th>Coupon({{ Session::get('coupon')['name'] }})</th>
                         <td data-title="Shipping">
                           -${{ Session::get('coupon')['amount'] ? Session::get('coupon')['amount'] : '' }}
                         </td>
@@ -191,7 +193,7 @@
                       <th>Total</th>
                       <td><strong><span class="woocommerce-Price-amount amount"><span
                               class="woocommerce-Price-currencySymbol">$</span>
-                            @if (Session::get('shipping_charge') && Session::get('coupon'))
+                            @if (Session::has('shipping_charge') && Session::has('coupon'))
                               {{ $cart->sum('sub_total') + Session::get('shipping_charge') - Session::get('coupon')['amount'] }}
                             @else
                               {{ $cart->sum('sub_total') + Session::get('shipping_charge') }}
@@ -218,7 +220,7 @@
                     </li>
                   </ul>
                   <div class="form-row place-order">
-                    
+
 
 
 
@@ -236,7 +238,7 @@
     </div>
   </section>
   <!-- checkout-section - end
-                                        ================================================== -->
+                                          ================================================== -->
 @endsection
 
 @section('script')

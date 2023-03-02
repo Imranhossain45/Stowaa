@@ -123,7 +123,7 @@
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                 
                 <input type="text" name="coupon" placeholder="Coupon Code..."
-                  value="{{ Session::has('coupon') ? Session::get('coupon')['couponName'] : '' }}">
+                  value="{{ Session::has('coupon') ? Session::get('coupon')['name'] : '' }}">
                 <button type="submit" class="btn btn_dark">Apply Coupon</button>
                 
                 <div class="info_icon">
@@ -179,7 +179,7 @@
               </li>
               @if (Session::has('coupon'))
                 <li>
-                  <span>Coupon({{ Session::get('coupon')['couponName'] }})</span>
+                  <span>Coupon({{ Session::get('coupon')['name'] }})</span>
                   <span>-{{ Session::get('coupon')['amount'] }}</span>
                 </li>
               @endif

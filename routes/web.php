@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\InventoryController;
+use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\UserAuth\UserAuthController;
@@ -152,6 +153,9 @@ Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->
         Route::put('/{shippingcharge}/update/', 'update')->name('update');
         Route::delete('/{shippingcharge}/delete/', 'destroy')->name('destroy');
     });
+        Route::controller(OrderController::class)->prefix('order')->name('order.')->group(function () {
+            Route::get('/','index')->name('index');
+        });
     
 });
 

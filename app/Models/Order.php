@@ -14,4 +14,8 @@ class Order extends Model
      * @var array<int, string>
      */
     protected $guarded = ['id'];
+
+    public function invoice(){
+        return $this->hasOne(Invoice::class);
+    }
 }

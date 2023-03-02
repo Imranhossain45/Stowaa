@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InventoryOrder extends Model
+class Invoice extends Model
 {
     use HasFactory;
     /**
@@ -14,9 +14,4 @@ class InventoryOrder extends Model
      * @var array<int, string>
      */
     protected $guarded = ['id'];
-    
-    public function inventory()
-    {
-        return $this->belongsTo(Inventory::class);
-    }
 }
