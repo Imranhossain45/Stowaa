@@ -21,34 +21,39 @@
       <div class="col-12">
         <form></form>
         <form action="{{ route('backend.order.index') }}" method="GET">
-         
-          <div class="row">
+
+          <div class="row align-items-end">
             <div class="col-xl-2 col-lg-3 mb-3">
-              <input type="search" name="order_id" class=" form-control" placeholder="Order Id" value="{{ request()->order_id ?? '' }}">
+              <input type="search" name="order_id" class=" form-control" placeholder="Order Id"
+                value="{{ request()->order_id ?? '' }}">
             </div>
             <div class="col-xl-2 col-lg-3 mb-3">
               <select name="order_status" class=" form-control">
                 <option selected disabled>Order Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Cancel">Cancel</option>
+                <option value="Pending" {{ request()->order_status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                <option value="Processing" {{ request()->order_status == 'Processing' ? 'selected' : '' }}>Processing</option>
+                <option value="Complete" {{ request()->order_status == 'Complete' ? 'selected' : '' }}>Complete</option>
+                <option value="Cancel" {{ request()->order_status == 'Cancel' ? 'selected' : '' }}>Cancel</option>
               </select>
             </div>
             <div class="col-xl-2 col-lg-3 mb-3">
               <select name="payment_status" class=" form-control">
                 <option selected disabled>Payment Status</option>
-                <option value="Paid">Paid</option>
-                <option value="Unpaid">Unpaid</option>
+                <option value="Paid" {{ request()->payment_status == 'Paid' ? 'selected' : '' }}>Paid</option>
+                <option value="Unpaid" {{ request()->payment_status == 'Unpaid' ? 'selected' : '' }}>Unpaid</option>
               </select>
             </div>
             <div class="col-xl-2 col-lg-3 mb-3">
-              <input type="date" name="from-date" class=" form-control">
+              <label for="">From</label>
+              <input type="date" name="from_date" class=" form-control" value="{{ request()->from_date ?? '' }}">
             </div>
             <div class="col-xl-2 col-lg-3 mb-3">
-              <input type="date" name="to-date" class=" form-control">
+              <label for="">To</label>
+              <input type="date" name="to_date" class=" form-control" value="{{ request()->to_date ?? '' }}">
             </div>
             <div class="col-xl-2 col-lg-3 mb-3">
-              <input type="submit" class="form-control btn btn-sm btn-success" value="Search">
+              <input type="submit" class=" btn btn-success" value="Search">
+              <a href="{{ route('backend.order.index') }}" class=" btn btn-warning">Reset</a>
             </div>
           </div>
         </form>
@@ -76,7 +81,7 @@
                     <td>{{ $order->payment_status }}</td>
                     <td>{{ $order->created_at->isoFormat('DD-MMM-YYYY') }}</td>
                     <td>
-                      <a href="">View</a>
+                      <a href="{{ route('backend.order.show',$order->id) }}" class="btn tbn-sm btn-primary">View</a>
                     </td>
                   </tr>
                 @endforeach

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
@@ -15,15 +16,33 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->all()){
-            $orders = Order::where('id','LIKE', '%'. $request->order_id.'%')->orderBy('created_at', 'desc')->select('id', 'total', 'order_status', 'payment_status', 'created_at')->paginate(2)->withQueryString();
-           
-        
-        }else{
+        if ($request->all()) {
+            $orders = Order::where(function ($query) use ($request) {
+                if ($request->order_id) {
+                    $query->where('id', 'LIKE', '%' . $request->order_id . '%');
+                }
+                if ($request->order_status) {
+                    $query->where('order_status',$request->order_status );
+                }
+                if ($request->payment_status) {
+                    $query->where('payment_status',$request->payment_status );
+                }
+                if ($request->from_date) {
+                    $query->whereDate('created_at','>=', Carbon:: createFromFormat('Y-m-d', $request->from_date) );
+                    
+                }
+                if ($request->from_date && $request->to_date) {
+                    $query->whereBetween('created_at',[Carbon:: createFromFormat('Y-m-d', $request->from_date), Carbon::createFromFormat('Y-m-d', $request->to_date)] );
+                }
+            })
+                ->orderBy('created_at', 'desc')->select('id', 'total', 'order_status', 'payment_status', 'created_at')
+                ->paginate(10)
+                ->withQueryString();
+        } else {
 
-            $orders=Order::orderBy('created_at','desc')->select('id', 'total', 'order_status', 'payment_status', 'created_at')->paginate(30);
+            $orders = Order::orderBy('created_at', 'desc')->select('id', 'total', 'order_status', 'payment_status', 'created_at')->paginate(30);
         }
-        return view('backend.order.index',compact('orders'));
+        return view('backend.order.index', compact('orders'));
     }
 
     /**
@@ -55,7 +74,8 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        return Order::where('id',$order->id)->with('inventory_orders')->get();
+        return view('backend.order.show',compact('order'));
     }
 
     /**
