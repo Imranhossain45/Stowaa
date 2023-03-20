@@ -17,8 +17,8 @@ class ShopController extends Controller
     }
     public function shopDetails($slug)
     {
-        $product= Product::with('galleries','inventories.size','inventories.color')->where('slug',$slug)->firstOrFail();
-        $size=Inventory::where('product_id', $product->id)->get();
+        $product = Product::with('galleries','inventories.size','inventories.color')->where('slug',$slug)->firstOrFail();
+        $size = Inventory::where('product_id', $product->id)->get();
         $sizeOf= $size->unique(function($item){
             return $item['size_id'];
         });

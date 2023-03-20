@@ -77,13 +77,13 @@ class SslCommerzPaymentController extends Controller
         # CUSTOMER INFORMATION
         $post_data['cus_name'] = auth()->user()->name;
         $post_data['cus_email'] = auth()->user()->email;
-        $post_data['cus_add1'] = auth()->user()->user_info->address;
+        $post_data['cus_add1'] = auth()->user()->user_info->address ?? '';
         $post_data['cus_add2'] = "";
-        $post_data['cus_city'] = auth()->user()->user_info->city;
+        $post_data['cus_city'] = auth()->user()->user_info->city ?? '';
         $post_data['cus_state'] = "";
-        $post_data['cus_postcode'] = auth()->user()->user_info->zip;
+        $post_data['cus_postcode'] = auth()->user()->user_info->zip ?? '';
         $post_data['cus_country'] = "Bangladesh";
-        $post_data['cus_phone'] = auth()->user()->user_info->phone;
+        $post_data['cus_phone'] = auth()->user()->user_info->phone ?? '';
         $post_data['cus_fax'] = "";
 
         # SHIPMENT INFORMATION

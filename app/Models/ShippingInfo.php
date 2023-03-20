@@ -14,4 +14,9 @@ class ShippingInfo extends Model
      * @var array<int, string>
      */
     protected $guarded = ['id'];
+
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

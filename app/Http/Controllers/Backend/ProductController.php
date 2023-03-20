@@ -133,6 +133,7 @@ class ProductController extends Controller
     {
         /* $preview_img = 'product.png'; */
         $img= $request->file('image');
+        /* $gallery[]= $request->file('image'); */
         $request->validate([
             'title' => 'required|unique:products,title,'.$product->id,
             'category_id' => 'required',
@@ -144,6 +145,7 @@ class ProductController extends Controller
             'add_info' => 'nullable',
             'image' => 'nullable|mimes:jpg,jpeg,png,webp|max:512',
             'currency' => 'required',
+            /* 'gallery[]' => 'required', */
         ]);
 
 
@@ -174,6 +176,7 @@ class ProductController extends Controller
             "add_info" => $request->add_info,
             "image" => $preview_img,
             "currency" => $request->currency,
+            /* "gallery[]" => $request->gallery[], */
         ]);
 
         $product->categories()->sync($request->category_id);

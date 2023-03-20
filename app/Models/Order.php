@@ -22,4 +22,12 @@ class Order extends Model
     {
         return $this->hasMany(InventoryOrder::class);
     }
+    public function shipping()
+    {
+        return $this->hasOne(ShippingInfo::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

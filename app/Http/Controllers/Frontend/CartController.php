@@ -46,6 +46,7 @@ class CartController extends Controller
             "quantity"=>"required|integer",
             "sub_total"=>"required|numeric",
         ]);
+        
         $success=Cart::create([
             "user_id"=>auth()->user()->id,
             "inventory_id" => $request->inventory_id,

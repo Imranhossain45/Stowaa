@@ -124,7 +124,7 @@
               <h4>Upload Gallery</h4>
             </div>
             <div class="card-body">
-              <form action="">
+              <form action="{{ route('backend.product.update',$product->id) }}">
                 <div class=" form-group">
                 <label for=""> Product Gallery Image</label>
                 <input type="file" class=" form-control" name="gallery[]" multiple>
