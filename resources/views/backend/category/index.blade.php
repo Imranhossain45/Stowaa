@@ -26,15 +26,15 @@
             <table class=" table-sm">
               <tr>
                 <th>ID</th>
-                <th>Name</th>
                 <th>Image</th>
+                <th>Name</th>
                 <th>Slug</th>
                 <th>Product Count</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
               @forelse ($categories as $key=>$category)
-                <tr style="background: #d3d1d1">
+                <tr>
                   <td>{{ ++$key }}</td>
                   <td>
                     @if ($category->image)

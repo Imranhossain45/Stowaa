@@ -21,6 +21,7 @@ use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\UserAuth\UserAuthController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\ShippingChargeController;
+use App\Http\Controllers\Backend\UserDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::name('frontend.')->group(function () {
         Route::get('/shoplist', "shoplist")->name('shoplist');
         Route::get('/shopdetails', "shopdetails")->name('shopdetails');
     });
+        
 
     Route::controller(ShopController::class)->name('shop.')->group(function () {
         Route::get('/shop', 'index')->name('index');
@@ -53,16 +55,23 @@ Route::name('frontend.')->group(function () {
         Route::post('/shop/single/color', 'shopColor')->name('color');
         Route::post('/shop/select-color', 'shopSizeColor')->name('color.size.select');
     });
-    Route::controller(CartController::class)->middleware(['auth','verified'])->prefix('cart')->name('cart.')->group(function () {
+    Route::controller(CartController::class)->middleware(['auth', 'verified'])->prefix('cart')->name('cart.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
         Route::post('/update', 'update')->name('update');
         Route::delete('/delete/{cart}', 'destroy')->name('delete');
-        
+
         Route::get('checkout', 'checkoutView')->name('checkout.view');
     });
     Route::post('apply/coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
     Route::post('apply/charge', [ShippingChargeController::class, 'applyCharge'])->name('apply.charge');
+});
+
+/* User dashboard */
+
+Route::controller(UserDashboardController::class)->prefix('user/dashboard')->name('user.')->middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/','index')->name('dashboard');
+    Route::get('/orders','order')->name('order');
 });
 
 
@@ -71,7 +80,85 @@ Route::name('frontend.')->group(function () {
 /* Backend Routes */
 Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [BackendController::class, 'dashboardIndex'])->middleware('verified')->name('home');
+    Route::middleware(['role:super-admin|admin'])->group(function () {
 
+        /* Product Route */
+        Route::controller(ProductController::class)->prefix('product')->name('product.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{product}/show/', 'show')->name('show');
+            Route::get('/{product}/edit/', 'edit')->name('edit');
+            Route::put('/{product}/update/', 'update')->name('update');
+            Route::delete('/{product}/delete/', 'destroy')->name('destroy');
+            Route::get('/restore/{id}', 'restore')->name('restore');
+            Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy');
+        });
+        /* Inventory Route */
+        Route::controller(InventoryController::class)->prefix('product/inventory')->name('product.inventory.')->group(function () {
+            Route::get('/{id}', 'index')->name('index');
+            /* Route::get('/create', 'create')->name('create'); */
+            Route::post('/', 'store')->name('store');
+            Route::get('/{inventory}/show/', 'show')->name('show');
+            Route::get('/{inventory}/edit/', 'edit')->name('edit');
+            Route::put('/{inventory}/update/', 'update')->name('update');
+            Route::delete('/{inventory}/delete/', 'destroy')->name('destroy');
+            /* Route::get('/restore/{id}', 'restore')->name('restore');
+        Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy'); */
+
+            Route::post('/select/color', 'colorSelect')->name('color.select');
+        });
+
+        /* Product Category Route */
+        Route::controller(CategoryController::class)->prefix('category')->name('category.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{category}/show/', 'show')->name('show');
+            Route::get('/{category}/edit/', 'edit')->name('edit');
+            Route::put('/{category}/update/', 'update')->name('update');
+            Route::delete('/{category}/delete/', 'destroy')->name('destroy');
+        });
+        /* Color Route */
+        Route::controller(ColorController::class)->prefix('color')->name('color.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{color}/show/', 'show')->name('show');
+            Route::get('/{color}/edit/', 'edit')->name('edit');
+            Route::put('/{color}/update/', 'update')->name('update');
+            Route::delete('/{color}/delete/', 'destroy')->name('destroy');
+        });
+        /* Size Route */
+        Route::controller(SizeController::class)->prefix('size')->name('size.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{size}/show/', 'show')->name('show');
+            Route::get('/{size}/edit/', 'edit')->name('edit');
+            Route::put('/{size}/update/', 'update')->name('update');
+            Route::delete('/{size}/delete/', 'destroy')->name('destroy');
+        });
+        /* Coupon Route */
+        Route::controller(CouponController::class)->prefix('coupon')->name('coupon.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{coupon}/edit/', 'edit')->name('edit');
+            Route::put('/{coupon}/update/', 'update')->name('update');
+            Route::delete('/{coupon}/delete/', 'destroy')->name('destroy');
+        });
+        /* Shipping Charge Route */
+        Route::controller(ShippingChargeController::class)->prefix('shipping/charge')->name('shippingcharge.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{shippingcharge}/edit/', 'edit')->name('edit');
+            Route::put('/{shippingcharge}/update/', 'update')->name('update');
+            Route::delete('/{shippingcharge}/delete/', 'destroy')->name('destroy');
+        });
+        Route::controller(OrderController::class)->prefix('order')->name('order.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/show/{order}', 'show')->name('show');
+            Route::get('/update/{order}', 'update')->name('update');
+            Route::get('/status/{order}', 'status')->name('status');
+        });
+    });
     /* Role and Permission */
     Route::controller(RolePermissionController::class)->prefix('role')->name('role.')->group(function () {
         Route::get('/', 'indexRole')->name('index')->middleware(['role_or_permission:super-admin|see role']);
@@ -83,82 +170,6 @@ Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->
 
         Route::post('/permission/store', [RolePermissionController::class, 'permissionStore'])->name('permission.store');
     });
-    /* Product Route */
-    Route::controller(ProductController::class)->prefix('product')->name('product.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{product}/show/', 'show')->name('show');
-        Route::get('/{product}/edit/', 'edit')->name('edit');
-        Route::put('/{product}/update/', 'update')->name('update');
-        Route::delete('/{product}/delete/', 'destroy')->name('destroy');
-        Route::get('/restore/{id}', 'restore')->name('restore');
-        Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy');
-    });
-    /* Inventory Route */
-    Route::controller(InventoryController::class)->prefix('product/inventory')->name('product.inventory.')->group(function () {
-        Route::get('/{id}', 'index')->name('index');
-        /* Route::get('/create', 'create')->name('create'); */
-        Route::post('/', 'store')->name('store');
-        Route::get('/{inventory}/show/', 'show')->name('show');
-        Route::get('/{inventory}/edit/', 'edit')->name('edit');
-        Route::put('/{inventory}/update/', 'update')->name('update');
-        Route::delete('/{inventory}/delete/', 'destroy')->name('destroy');
-        /* Route::get('/restore/{id}', 'restore')->name('restore');
-        Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy'); */
-
-        Route::post('/select/color', 'colorSelect')->name('color.select');
-    });
-
-    /* Product Category Route */
-    Route::controller(CategoryController::class)->prefix('category')->name('category.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{category}/show/', 'show')->name('show');
-        Route::get('/{category}/edit/', 'edit')->name('edit');
-        Route::put('/{category}/update/', 'update')->name('update');
-        Route::delete('/{category}/delete/', 'destroy')->name('destroy');
-    });
-    /* Color Route */
-    Route::controller(ColorController::class)->prefix('color')->name('color.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{color}/show/', 'show')->name('show');
-        Route::get('/{color}/edit/', 'edit')->name('edit');
-        Route::put('/{color}/update/', 'update')->name('update');
-        Route::delete('/{color}/delete/', 'destroy')->name('destroy');
-    });
-    /* Size Route */
-    Route::controller(SizeController::class)->prefix('size')->name('size.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{size}/show/', 'show')->name('show');
-        Route::get('/{size}/edit/', 'edit')->name('edit');
-        Route::put('/{size}/update/', 'update')->name('update');
-        Route::delete('/{size}/delete/', 'destroy')->name('destroy');
-    });
-    /* Coupon Route */
-    Route::controller(CouponController::class)->prefix('coupon')->name('coupon.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{coupon}/edit/', 'edit')->name('edit');
-        Route::put('/{coupon}/update/', 'update')->name('update');
-        Route::delete('/{coupon}/delete/', 'destroy')->name('destroy');
-    });
-    /* Shipping Charge Route */
-    Route::controller(ShippingChargeController::class)->prefix('shipping/charge')->name('shippingcharge.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{shippingcharge}/edit/', 'edit')->name('edit');
-        Route::put('/{shippingcharge}/update/', 'update')->name('update');
-        Route::delete('/{shippingcharge}/delete/', 'destroy')->name('destroy');
-    });
-        Route::controller(OrderController::class)->prefix('order')->name('order.')->group(function () {
-            Route::get('/','index')->name('index');
-            Route::get('/show/{order}', 'show')->name('show');
-            Route::get('/update/{order}', 'update')->name('update');
-        });
-    
 });
 
 

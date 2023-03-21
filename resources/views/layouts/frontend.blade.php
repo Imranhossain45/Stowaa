@@ -142,7 +142,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="account.html">
+                  <a href="{{ route('user.dashboard') }}">
                     <svg role="img" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
                       viewBox="0 0 24 24" stroke="#051d43" stroke-width="1" stroke-linecap="square"
                       stroke-linejoin="miter" fill="none" color="#2329D6">
@@ -156,7 +156,7 @@
             </div>
             <div class="col col-md-3">
               <p class="header_hotline">Call us: <strong>+8801517141272</strong></p>
-            </div>            
+            </div>
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@
             <div class="col col-lg-3 col-md-3 col-sm-12">
               <div class="brand_logo">
                 <a class="brand_link" href="index-2.html">
-                  <img src="{{ asset('frontend/images/logo/logo_1x.png') }}"   alt="image_not_found">
+                  <img src="{{ asset('frontend/images/logo/logo_1x.png') }}" alt="image_not_found">
                 </a>
               </div>
             </div>
@@ -210,7 +210,6 @@
           </div>
         </div>
       </div>
-
       <div class="header_bottom">
         <div class="container">
           <div class="row align-items-center">
@@ -227,10 +226,13 @@
                   </svg>
                   Browse categories
                 </button>
-                <div class="collapse {{ Route::is('frontend.home')? 'show' : '' }}" id="allcategories_collapse">
+                <div class="collapse {{ Route::is('frontend.home') ? 'show' : '' }}" id="allcategories_collapse">
                   <div class="card card-body">
                     <ul class="allcategories_list ul_li_block">
-                      <li><a href="{{ route('frontend.shopgrid') }}"><i class="icon icon-Starship"></i> New Arrival Products</a></li>
+                      @foreach ($categories as $category)
+                        <li><a href=""><i class="icon icon-Starship"></i> {{ $category->name }}</a></li>
+                      @endforeach
+                      {{-- 
                       <li><a href="{{ route('frontend.shoplist') }}"><i class="icon icon-WorldWide"></i> Most Popular Products</a></li>
                       <li><a href="{{ route('frontend.shopgrid') }}"><i class="icon icon-Star"></i> Deals of the day</a></li>
                       <li><a href="{{ route('frontend.shoplist') }}"><i class="icon icon-Phone"></i> Mobile Accessories</a></li>
@@ -242,7 +244,7 @@
                       <li><a href="{{ route('frontend.shopgrid') }}"><i class="icon icon-DesktopMonitor"></i> Computer Accessories</a>
                       </li>
                       <li><a href="{{ route('frontend.shoplist') }}"><i class="icon icon-Bulb"></i> Consumer Electronics</a></li>
-                      <li><a href="{{ route('frontend.shopgrid') }}"><i class="icon icon-Car"></i> Automobiles & Motorcycles</a></li>
+                      <li><a href="{{ route('frontend.shopgrid') }}"><i class="icon icon-Car"></i> Automobiles & Motorcycles</a></li> --}}
                     </ul>
                   </div>
                 </div>
@@ -257,7 +259,8 @@
                   </button>
                   <ul class="main_menu_list ul_li">
                     <li>
-                      <a class="nav-link" href="{{ route('frontend.home') }}" id="shop_submenu" role="button">Home</a>
+                      <a class="nav-link" href="{{ route('frontend.home') }}" id="shop_submenu"
+                        role="button">Home</a>
                     </li>
                     <li>
                       <a class=" nav-link" href="{{ route('frontend.shop.index') }}">Shop</a>
@@ -281,38 +284,52 @@
                         <li><a href="blog_details.html">Blog Details</a></li>
                       </ul>
                     </li>
-                    
-                      <li class="dropdown">
-                          <a href="#" id="cart_submenu" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Shopping Cart</a>
-                          <ul class="submenu dropdown-menu" aria-labelledby="cart_submenu">
-                            <li><a href="cart.html">Cart</a></li>
-                            <li><a href="cart_empty.html">Cart Empty</a></li>
-                            <li><a href="checkout.html">Checkout</a></li>
-                            <li><a href="compare.html">Compare</a></li>
-                            <li><a href="wishlist.html">Wishlist</a></li>
-                            <li><a href="order_tracking.html">Order Tracking</a></li>
-                          </ul>
-                        </li>
-                    
+
                     <li class="dropdown">
                       <a class="nav-link" href="#" id="pages_submenu" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false"> More </a>
                       <ul class="submenu dropdown-menu" aria-labelledby="pages_submenu">
-                        <li><a href="{{ route('frontend.about') }}">About Us</a></li>
                         <li><a href="{{ route('frontend.team') }}">Team</a></li>
-                        <li><a href="account.html">My Account</a></li>
                       </ul>
                     </li>
-                    
+                    <li><a class="nav-link" href="{{ route('frontend.about') }}">About Us</a></li>
                     <li><a class="nav-link" href="{{ route('frontend.contact') }}">Contact Us</a></li>
+                    @auth
+                      <li>
+                        <div class="dropdown ">
+                          <button class="dropdown-toggle btn btn-success" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            {{ Auth::user()->name }}
+                          </button>
+                          <div class="dropdown-menu ">
+                            <a class="dropdown-item" href="{{ route('user.dashboard') }}">Profile</a>
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                              onclick="event.preventDefault();
+                               document.getElementById('logout-form').submit();" style="color: red">
+                               {{ __('Logout') }}
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                              @csrf
+                            </form>
+                          </div>
+                        </div>
+                      </li>
+                    @else
+                      @if (Route::has('login'))
+                        <li><a class="nav-link" href="{{ route('user.login') }}">Login</a></li>
+                      @endif
+                      @if (Route::has('register'))
+                        <li><a class="nav-link" href="{{ route('user.registration') }}">Register</a></li>
+                      @endif
+                    @endauth
+
                   </ul>
                 </div>
               </nav>
               <div class="offcanvas_overlay"></div>
             </div>
 
-            
+
           </div>
         </div>
       </div>
@@ -339,11 +356,13 @@
                 </div>
                 <ul class="social_round ul_li">
                   <li><a href="https://www.youtube.com/"><i class="icofont-youtube-play"></i></a></li>
-                  <li><a href="https://www.instagram.com/s_m.imran.hossain/"><i class="icofont-instagram"></i></a></li>
+                  <li><a href="https://www.instagram.com/s_m.imran.hossain/"><i class="icofont-instagram"></i></a>
+                  </li>
                   <li><a href="https://twitter.com/MdImran71507952"><i class="icofont-twitter"></i></a></li>
-                  <li><a href="https://www.linkedin.com/in/imran-hossain-854878206/"><i class="icofont-linkedin"></i></a></li>
+                  <li><a href="https://www.linkedin.com/in/imran-hossain-854878206/"><i
+                        class="icofont-linkedin"></i></a></li>
                   <li><a href="https://www.facebook.com/mdimran.h.sagor"><i class="icofont-facebook"></i></a></li>
-                  
+
                 </ul>
               </div>
             </div>
@@ -396,8 +415,10 @@
                   </div>
                 </div>
                 <ul class="store_btns_group ul_li">
-                  <li><a href="#!"><img src="{{ asset('frontend/images/app_store.png') }}" alt="app_store"></a></li>
-                  <li><a href="#!"><img src="{{ asset('frontend/images/play_store.png') }}" alt="play_store"></a></li>
+                  <li><a href="#!"><img src="{{ asset('frontend/images/app_store.png') }}" alt="app_store"></a>
+                  </li>
+                  <li><a href="#!"><img src="{{ asset('frontend/images/play_store.png') }}"
+                        alt="play_store"></a></li>
                 </ul>
               </div>
             </div>

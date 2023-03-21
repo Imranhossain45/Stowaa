@@ -11,7 +11,7 @@
           </ol>
         </nav>
         <h1 class="m-0">Orders ID:{{ $singleOrder->id }}
-        <a href="{{ route('backend.order.update',$singleOrder->id) }}" class="btn btn-success">Completed</a>
+        <a href="{{ route('backend.order.status',$singleOrder->id) }}" class="btn {{ $singleOrder->order_status == 'Processing' ? 'btn btn-success' : 'btn btn-warning' }}">{{ $singleOrder->order_status == 'Processing' ? 'Complete' : 'Processing' }}</a>
         </h1>
       </div>
     </div>
@@ -19,7 +19,6 @@
 
   <div class="container-fluid page__container">
     <div class="row">
-      {{ $singleOrder->shipping }}
       <div class="col-lg-12 table-responsive">
         <div class="card">
           <div class="card-header">

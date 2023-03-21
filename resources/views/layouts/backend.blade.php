@@ -106,7 +106,8 @@
                   <span class="mr-1 d-flex-inline">
                     <span class="text-light">{{ auth()->user()->name }}</span>
                   </span>
-                  <img src="{{ Avatar::create(auth()->user()->name)->setDimension(40)->setFontSize(16)->toBase64() }}" alt="">
+                  <img src="{{ Avatar::create(auth()->user()->name)->setDimension(40)->setFontSize(16)->toBase64() }}"
+                    alt="">
                   {{-- <img src="assets/images/avatar/demi.png" class="rounded-circle" width="32" alt="Frontted"> --}}
                 </a>
                 <div id="account_menu" class="dropdown-menu dropdown-menu-right">
@@ -155,111 +156,119 @@
               <div class="sidebar-heading">Menu</div>
               <ul class="sidebar-menu">
                 <li class="sidebar-menu-item {{ Route::is('backend.*') ? 'active' : '' }}">
-                  <a class="sidebar-menu-button {{ Route::is('backend.*') ? 'active' : '' }}" href="{{ route('backend.home') }}">
+                  <a class="sidebar-menu-button {{ Route::is('backend.*') ? 'active' : '' }}"
+                    href="{{ route('backend.home') }}">
                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dvr</i>
                     <span class="sidebar-menu-text">Dashboards</span>
                   </a>
                 </li>
-                <li class="sidebar-menu-item {{ Route::is('backend.order.*') ? 'active' : '' }}">
-                  <a class="sidebar-menu-button" href="{{ route('backend.order.index') }}">
-                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
-                    <span class="sidebar-menu-text">Order</span>
-                  </a>
-                </li>
-                <li class="sidebar-menu-item {{ Route::is(['backend.product.*','backend.category.*','backend.color.*','backend.size.*']) ? 'active open' : '' }}">
-                  <a class="sidebar-menu-button" data-toggle="collapse" href="#category_menu">
-                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
-                    <span class="sidebar-menu-text">Products</span>
-                    <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                  </a>
-                  <ul class="sidebar-submenu collapse" id="category_menu">
-                    <li class="sidebar-menu-item {{ Route::is('backend.product.create') ? 'active' : '' }}">
-                      <a class="sidebar-menu-button" href="{{ route('backend.product.create') }}">
-                        <span class="sidebar-menu-text">Add Product</span>
-                      </a>
-                    </li>
-                    <li class="sidebar-menu-item {{ Route::is('backend.product.index') ? 'active' : '' }}">
-                      <a class="sidebar-menu-button" href="{{ route('backend.product.index') }}">
-                        <span class="sidebar-menu-text">All Products</span>
-                      </a>
-                    </li>
-                    <li class="sidebar-menu-item {{ Route::is('backend.category.index') ? 'active' : '' }}">
-                      <a class="sidebar-menu-button" href="{{ route('backend.category.index') }}">
-                        <span class="sidebar-menu-text">Product Category</span>
-                      </a>
-                    </li>
-                    <li class="sidebar-menu-item {{ Route::is('backend.color.index') ? 'active' : '' }}">
-                      <a class="sidebar-menu-button" href="{{ route('backend.color.index') }}">
-                        <span class="sidebar-menu-text">Product Color</span>
-                      </a>
-                    </li>
-                    <li class="sidebar-menu-item {{ Route::is('backend.size.index') ? 'active' : '' }}">
-                      <a class="sidebar-menu-button" href="{{ route('backend.size.index') }}">
-                        <span class="sidebar-menu-text">Product Size</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-
-                @canany(['see role', 'create role'])
-                  <li class="sidebar-menu-item {{ Route::is('backend.role*') ? 'active open' : '' }}">
-                    <a class="sidebar-menu-button" data-toggle="collapse" href="#role_menu">
+                
+                  @role('super-admin|admin')
+                  <li class="sidebar-menu-item {{ Route::is('backend.order.*') ? 'active' : '' }}">
+                    <a class="sidebar-menu-button" href="{{ route('backend.order.index') }}">
                       <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
-                      <span class="sidebar-menu-text">Role & Permision</span>
+                      <span class="sidebar-menu-text">Order</span>
+                    </a>
+                  </li>
+                  <li
+                    class="sidebar-menu-item {{ Route::is(['backend.product.*', 'backend.category.*', 'backend.color.*', 'backend.size.*']) ? 'active open' : '' }}">
+                    <a class="sidebar-menu-button" data-toggle="collapse" href="#category_menu">
+                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                      <span class="sidebar-menu-text">Products</span>
                       <span class="ml-auto sidebar-menu-toggle-icon"></span>
                     </a>
-                    <ul class="sidebar-submenu collapse" id="role_menu">
-                      @can('see role')
-                        <li class="sidebar-menu-item {{ Route::is('backend.role.index') ? 'active' : '' }}">
-                          <a class="sidebar-menu-button" href="{{ route('backend.role.index') }}">
-                            <span class="sidebar-menu-text">All Roles</span>
-                          </a>
-                        </li>
-                      @endcan
-                      @can('create role')
-                        <li class="sidebar-menu-item {{ Route::is('backend.role.create') ? 'active' : '' }}">
-                          <a class="sidebar-menu-button" href="{{ route('backend.role.create') }}">
-                            <span class="sidebar-menu-text">Create Role</span>
-                          </a>
-                        </li>
-                      @endcan
+                    <ul class="sidebar-submenu collapse" id="category_menu">
+                      <li class="sidebar-menu-item {{ Route::is('backend.product.create') ? 'active' : '' }}">
+                        <a class="sidebar-menu-button" href="{{ route('backend.product.create') }}">
+                          <span class="sidebar-menu-text">Add Product</span>
+                        </a>
+                      </li>
+                      <li class="sidebar-menu-item {{ Route::is('backend.product.index') ? 'active' : '' }}">
+                        <a class="sidebar-menu-button" href="{{ route('backend.product.index') }}">
+                          <span class="sidebar-menu-text">All Products</span>
+                        </a>
+                      </li>
+                      <li class="sidebar-menu-item {{ Route::is('backend.category.index') ? 'active' : '' }}">
+                        <a class="sidebar-menu-button" href="{{ route('backend.category.index') }}">
+                          <span class="sidebar-menu-text">Product Category</span>
+                        </a>
+                      </li>
+                      <li class="sidebar-menu-item {{ Route::is('backend.color.index') ? 'active' : '' }}">
+                        <a class="sidebar-menu-button" href="{{ route('backend.color.index') }}">
+                          <span class="sidebar-menu-text">Product Color</span>
+                        </a>
+                      </li>
+                      <li class="sidebar-menu-item {{ Route::is('backend.size.index') ? 'active' : '' }}">
+                        <a class="sidebar-menu-button" href="{{ route('backend.size.index') }}">
+                          <span class="sidebar-menu-text">Product Size</span>
+                        </a>
+                      </li>
                     </ul>
                   </li>
-                @endcanany
 
-                <li class="sidebar-menu-item {{ Route::is('backend.coupon.*') ? 'active' : '' }}">
-                  <a class="sidebar-menu-button" href="{{ route('backend.coupon.index') }}">
-                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
-                    <span class="sidebar-menu-text">Coupon</span>
-                  </a>
-                </li>
-                <li class="sidebar-menu-item {{ Route::is('backend.shippingcharge.*') ? 'active' : '' }}">
-                  <a class="sidebar-menu-button" href="{{ route('backend.shippingcharge.index') }}">
-                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
-                    <span class="sidebar-menu-text">Shipping Charge</span>
-                  </a>
-                </li>
-                <li class="sidebar-menu-item">
-                  <a class="sidebar-menu-button" data-toggle="collapse" href="#apps_menu">
-                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
-                    <span class="sidebar-menu-text">Apps</span>
-                    <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                  </a>
-                  <ul class="sidebar-submenu collapse" id="apps_menu">
-                    <li class="sidebar-menu-item">
-                      <a class="sidebar-menu-button" href="app-activities.html">
-                        <span class="sidebar-menu-text">Activities</span>
+                  @canany(['see role', 'create role'])
+                    <li class="sidebar-menu-item {{ Route::is('backend.role*') ? 'active open' : '' }}">
+                      <a class="sidebar-menu-button" data-toggle="collapse" href="#role_menu">
+                        <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                        <span class="sidebar-menu-text">Role & Permision</span>
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
                       </a>
+                      <ul class="sidebar-submenu collapse" id="role_menu">
+                        @can('see role')
+                          <li class="sidebar-menu-item {{ Route::is('backend.role.index') ? 'active' : '' }}">
+                            <a class="sidebar-menu-button" href="{{ route('backend.role.index') }}">
+                              <span class="sidebar-menu-text">All Roles</span>
+                            </a>
+                          </li>
+                        @endcan
+                        @can('create role')
+                          <li class="sidebar-menu-item {{ Route::is('backend.role.create') ? 'active' : '' }}">
+                            <a class="sidebar-menu-button" href="{{ route('backend.role.create') }}">
+                              <span class="sidebar-menu-text">Create Role</span>
+                            </a>
+                          </li>
+                        @endcan
+                      </ul>
                     </li>
-                  </ul>
-                </li>
+                  @endcanany
+
+                  <li class="sidebar-menu-item {{ Route::is('backend.coupon.*') ? 'active' : '' }}">
+                    <a class="sidebar-menu-button" href="{{ route('backend.coupon.index') }}">
+                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                      <span class="sidebar-menu-text">Coupon</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-menu-item {{ Route::is('backend.shippingcharge.*') ? 'active' : '' }}">
+                    <a class="sidebar-menu-button" href="{{ route('backend.shippingcharge.index') }}">
+                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                      <span class="sidebar-menu-text">Shipping Charge</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button" data-toggle="collapse" href="#apps_menu">
+                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                      <span class="sidebar-menu-text">Apps</span>
+                      <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse" id="apps_menu">
+                      <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" href="app-activities.html">
+                          <span class="sidebar-menu-text">Activities</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                  @endrole
+                
               </ul>
 
               <div class="d-flex align-items-center sidebar-p-a border-bottom sidebar-account">
                 <a href="#" class="flex d-flex align-items-center text-underline-0 text-body">
                   <span class="avatar avatar-sm mr-2">
                     {{-- <img src="assets/images/avatar/demi.png" alt="avatar" class="avatar-img rounded-circle"> --}}
-                    <img src="{{ Avatar::create(auth()->user()->name)->setDimension(40)->setFontSize(16)->toBase64() }}" alt="">
+                    <img
+                      src="{{ Avatar::create(auth()->user()->name)->setDimension(40)->setFontSize(16)->toBase64() }}"
+                      alt="">
                   </span>
                   <span class="flex d-flex flex-column">
                     <strong>{{ auth()->user()->name }}</strong>

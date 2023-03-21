@@ -75,7 +75,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $singleOrder= Order::where('id', $order->id)->with('inventory_orders.inventory.product')->first();
+        $singleOrder = Order::where('id', $order->id)->with('inventory_orders.inventory.product')->first();
         return view('backend.order.show',compact('singleOrder'));
     }
 
@@ -99,14 +99,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $request->validate([
-            'order_status' => 'processing',
-        ]);
-
-        $order->update([
-            'order_status' => 'Complete',
-        ]);
-        return back()->with('success','Order Completed');
+        
     }
 
     /**
@@ -118,5 +111,17 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function status(Order $order)
+    {
+        if ($order->order_status == 'Processing') {
+            $order->order_status = 'Complete';
+            $order->save();
+        } else {
+            $order->order_status = 'Processing';
+            $order->save();
+        }
+        return back()->with('success', $order->order_status == 'Processing' ? 'Order Processing' :'Order Completed');
     }
 }
