@@ -22,7 +22,15 @@ class ShopController extends Controller
         $sizeOf= $size->unique(function($item){
             return $item['size_id'];
         });
-        return view('frontend.shop.details', compact('product', 'sizeOf'));
+
+        $user_order_check = [];
+        foreach
+        (auth()->user()->inventories as $order_inventory){
+            $user_order_check = array_merge($user_order_check, $order_inventory->inventory->pluck('product_id')->toArray());
+        }
+        $user_order_check= array_unique($user_order_check);
+
+        return view('frontend.shop.details', compact('product', 'sizeOf', 'user_order_check'));
     }
     public function shopColor(Request $request){
         $inventories = Inventory::where('product_id', $request->product_id)->where('size_id', $request->size_id)->get();

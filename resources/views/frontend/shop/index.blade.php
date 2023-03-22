@@ -155,7 +155,7 @@
   <section class="product_section section_space">
     <div class="container">
       <div class="row">
-        @include('frontend.shop.shop-sidebar')
+        @include('frontend.shop.shop_sidebar')
 
         <div class="col-lg-9">
           <div class="filter_topbar">

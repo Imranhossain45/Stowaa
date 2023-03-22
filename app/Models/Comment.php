@@ -4,23 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class InventoryOrder extends Model
+class Comment extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $guarded = ['id'];
-    
-    public function inventory()
-    {
-        return $this->belongsTo(Inventory::class);
-    }
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
 }
