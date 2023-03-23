@@ -30,6 +30,7 @@
                   <th>Order Status</th>
                   <th>Payment Status</th>
                   <th>Order Date</th>
+                  <th>Invoice</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -41,6 +42,9 @@
                     <td>{{ $order->order_status }}</td>
                     <td>{{ $order->payment_status }}</td>
                     <td>{{ $order->created_at->isoFormat('DD-MMM-YYYY') }}</td>
+                    <td>
+                      <a href="" class="btn btn-primary">Download</a>
+                    </td>
                     <td>
                       <a href="#" class="btn tbn-sm btn-primary">View</a>
                     </td>

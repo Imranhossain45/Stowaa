@@ -166,7 +166,7 @@
                     <tr class="cart-subtotal">
                       <th>Subtotal</th>
                       <td><span class="woocommerce-Price-amount amount"><span
-                            class="woocommerce-Price-currencySymbol">$</span>{{ $cart->sum('sub_total') }}</span>
+                            class="woocommerce-Price-currencySymbol">$</span>{{auth()->user()->carts->sum('sub_total') }}</span>
                       </td>
                     </tr>
                     @if (Session::has('shipping_charge'))
@@ -194,9 +194,9 @@
                       <td><strong><span class="woocommerce-Price-amount amount"><span
                               class="woocommerce-Price-currencySymbol">$</span>
                             @if (Session::has('shipping_charge') && Session::has('coupon'))
-                              {{ $cart->sum('sub_total') + Session::get('shipping_charge') - Session::get('coupon')['amount'] }}
+                              {{auth()->user()->carts->sum('sub_total') + Session::get('shipping_charge') - Session::get('coupon')['amount'] }}
                             @else
-                              {{ $cart->sum('sub_total') + Session::get('shipping_charge') }}
+                              {{ auth()->user()->carts->sum('sub_total') + Session::get('shipping_charge') }}
                             @endif
 
                           </span></strong> </td>

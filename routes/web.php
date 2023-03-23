@@ -87,12 +87,13 @@ Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->
         Route::controller(UserController::class)->prefix('user')->name('user.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{user}/show/', 'show')->name('show');
-            Route::get('/{user}/edit/', 'edit')->name('edit');
-            Route::put('/{user}/update/', 'update')->name('update');
-            Route::delete('/{user}/delete/', 'destroy')->name('destroy');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/{user}/show', 'show')->name('show');
+            Route::get('/{user}/edit', 'edit')->name('edit');
+            Route::post('/{user}/update', 'update')->name('update');
+            Route::delete('/{user}/delete', 'destroy')->name('trash');
             Route::get('/restore/{id}', 'restore')->name('restore');
+            Route::get('/status/{id}', 'status')->name('status');
             Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy');
         });
 

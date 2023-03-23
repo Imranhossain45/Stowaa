@@ -23,6 +23,7 @@
               <h1 class="text-center">Add User</h1>
             </div>
             <div class="card-body">
+              <form action=""></form>
               <form action="{{ route('backend.user.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
@@ -39,8 +40,8 @@
                 </div>
                 <div class="form-group">
                   <b>Confirm Password:</b>
-                  <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                    name="password" required autocomplete="new-password">
+                  <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required
+                    autocomplete="new-password">
                 </div>
                 <div class="form-group">
                   <b>Photo:</b>

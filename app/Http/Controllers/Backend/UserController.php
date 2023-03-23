@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Backend;
 
+
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -55,14 +56,16 @@ class UserController extends Controller
         if ($photo) {
             $photoName = uniqid() . '.' . $photo->getClientOriginalExtension();
             Image::make($photo)->save(public_path('storage/user/' . $photoName));
+        }else{
+            $photoName = null;
         }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'email' => $request->phone,
+            'phone' => $request->phone,
             'photo' => $photoName,
             'password' => Hash::make($request->password),
-            'email_verified_at' => Carbon::now(),
+            'email_verified_at' => now(),
         ]);
         $user->assignRole($request->role);
         return back()->with('success','User Added!');
@@ -87,7 +90,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $roles = Role::whereNotIn('name', ['super-admin'])->get();
+        return view('backend.user.edit', compact('roles', 'user'));
     }
 
     /**
@@ -99,7 +103,30 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $photo = $request->file('photo');
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'photo' => 'nullable|mimes:png,jpg,jpeg|max:2000',
+        ]);
+        if ($photo) {
+            $path = public_path('storage/user/' . $user->photo);
+            if(file_exists($path)){
+                unlink($path);
+            }
+            $photoName = uniqid() . '.' . $photo->getClientOriginalExtension();
+            Image::make($photo)->save(public_path('storage/user/' . $photoName));
+        } else {
+            $photoName = $request->old_photo;
+        }
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'photo' => $photoName,
+        ]);
+        $user->assignRole($request->role);
+        return back()->with('success', 'User info Edited!');
     }
 
     /**
