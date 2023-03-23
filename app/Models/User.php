@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens,SoftDeletes, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +23,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
+        'photo',
         'password',
+        'phone',
     ];
 
     /**
@@ -50,6 +52,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function orders(){
         return $this->hasMany(Order::class);
+    }
+    public function carts(){
+        return $this->hasMany(Cart::class);
     }
     public function inventories(){
         return $this->hasManyThrough(InventoryOrder::class, Order::class);

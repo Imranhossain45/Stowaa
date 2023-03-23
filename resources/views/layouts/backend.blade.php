@@ -205,6 +205,25 @@
                       </li>
                     </ul>
                   </li>
+                   <li class="sidebar-menu-item {{ Route::is('backend.user*') ? 'active open' : '' }}">
+                      <a class="sidebar-menu-button" data-toggle="collapse" href="#user_menu">
+                        <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">slideshow</i>
+                        <span class="sidebar-menu-text">Users</span>
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                      </a>
+                      <ul class="sidebar-submenu collapse" id="user_menu">
+                          <li class="sidebar-menu-item {{ Route::is('backend.user.index') ? 'active' : '' }}">
+                            <a class="sidebar-menu-button" href="{{ route('backend.user.index') }}">
+                              <span class="sidebar-menu-text">All Users</span>
+                            </a>
+                          </li>
+                          <li class="sidebar-menu-item {{ Route::is('backend.user.create') ? 'active' : '' }}">
+                            <a class="sidebar-menu-button" href="{{ route('backend.user.create') }}">
+                              <span class="sidebar-menu-text">Create User</span>
+                            </a>
+                          </li>
+                      </ul>
+                    </li>
 
                   @canany(['see role', 'create role'])
                     <li class="sidebar-menu-item {{ Route::is('backend.role*') ? 'active open' : '' }}">
@@ -229,7 +248,7 @@
                           </li>
                         @endcan
                       </ul>
-                    </li>
+                    </li>                   
                   @endcanany
 
                   <li class="sidebar-menu-item {{ Route::is('backend.coupon.*') ? 'active' : '' }}">

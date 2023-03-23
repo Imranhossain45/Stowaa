@@ -21,6 +21,7 @@ use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\UserAuth\UserAuthController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\ShippingChargeController;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserDashboardController;
 
 /*
@@ -81,6 +82,19 @@ Route::controller(UserDashboardController::class)->prefix('user/dashboard')->nam
 Route::prefix('dashboard')->name('backend.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [BackendController::class, 'dashboardIndex'])->middleware('verified')->name('home');
     Route::middleware(['role:super-admin|admin'])->group(function () {
+
+        /* user route */
+        Route::controller(UserController::class)->prefix('user')->name('user.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{user}/show/', 'show')->name('show');
+            Route::get('/{user}/edit/', 'edit')->name('edit');
+            Route::put('/{user}/update/', 'update')->name('update');
+            Route::delete('/{user}/delete/', 'destroy')->name('destroy');
+            Route::get('/restore/{id}', 'restore')->name('restore');
+            Route::delete('/permanent/delete/{id}', 'permanentDestroy')->name('permanent.destroy');
+        });
 
         /* Product Route */
         Route::controller(ProductController::class)->prefix('product')->name('product.')->group(function () {

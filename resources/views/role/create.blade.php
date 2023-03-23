@@ -52,9 +52,8 @@
               <div>
                 <input type="text" class="form-control mb-2" name="name" placeholder="Add Role" value="{{ old('role') }}">
               </div>
-
-              <div class="mb-2 mt-2">
-
+              <b>Select Permission:</b>
+              <div class="mb-2 mt-2">                
                 @foreach ($permissions as $permission)
                   <label class="pr-2 col-2 border-1">
                     <input type="checkbox" name="permission[]" value="{{ $permission->id }}"> {{ $permission->name }}

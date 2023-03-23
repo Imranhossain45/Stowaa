@@ -149,7 +149,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($carts as $cart)
+                    @foreach (auth()->user()->carts as $cart)
                       <tr class="cart_item">
                         <td class="product-name">
                           {{ $cart->inventory->product->title }} <strong class="product-quantity">*

@@ -166,12 +166,12 @@
             <ul class="ul_li_block">
               <li>
                 <span>Cart Subtotal</span>
-                <span>
-                  @if ($cart->inventory->product->currency == 'BDT')
+                <span>$
+                  {{-- @if ($carts->inventory->product->currency == 'BDT')
                     TK
                   @else
                     $
-                  @endif
+                  @endif --}}
                   <strong id="display_sub_total">
                     {{ $carts->sum('sub_total') }}
                   </strong>
