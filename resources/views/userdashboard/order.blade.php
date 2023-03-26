@@ -43,7 +43,7 @@
                     <td>{{ $order->payment_status }}</td>
                     <td>{{ $order->created_at->isoFormat('DD-MMM-YYYY') }}</td>
                     <td>
-                      <a href="" class="btn btn-primary">Download</a>
+                      <a href="{{ route('user.invoice',$order->id) }}" class="btn btn-primary">Download</a>
                     </td>
                     <td>
                       <a href="#" class="btn tbn-sm btn-primary">View</a>

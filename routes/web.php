@@ -73,6 +73,7 @@ Route::name('frontend.')->group(function () {
 Route::controller(UserDashboardController::class)->prefix('user/dashboard')->name('user.')->middleware(['auth', 'role:user'])->group(function () {
     Route::get('/','index')->name('dashboard');
     Route::get('/orders','order')->name('order');
+    Route::get('/invoice/{id}', 'invoice')->name('invoice');
 });
 
 
